@@ -16,7 +16,7 @@ import com.cnblogs.hoojo.enums.TaskState;
  */
 public interface ListeningDownloadManager {
 
-	public void startTask() throws Exception;
+	public void start() throws Exception;
 	
 	public DownloadDataHolder getDataHolder();
 	

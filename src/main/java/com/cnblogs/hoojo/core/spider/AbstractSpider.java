@@ -267,7 +267,7 @@ public abstract class AbstractSpider extends SimpleAnalyzer implements SpiderExe
     		
     		log.info("开始启动网页图片下载任务");
     		try {
-				listeningDownloadManager.startTask();
+				listeningDownloadManager.start();
 			} catch (Exception e) {
 				log.error("执行下载数据方法异常：", e);
 			}

@@ -50,7 +50,7 @@ public class ListeningDownloadService extends ListeningDownloadWrapper {
 	}
 
 	@Override
-	public void startTask() throws Exception {
+	public void start() throws Exception {
 
 		if (state != TaskState.WAIT) {
 			log.trace("下载任务程序已启动运行，不能重复执行");

@@ -7,10 +7,9 @@
 						http://www.springframework.org/schema/beans/spring-util-3.2.xsd">
 
 	<bean id="options" class="com.cnblogs.hoojo.config.Options">
-		<property name="saveLocation" value="E:\\图片抓取"/>
 		<property name="beginPage" value="0"/>
-		<property name="pageNum" value="20"/>
-		<property name="maxDownloadTaskNum" value="15"/>
+		<property name="pageNum" value="1"/>
+		<property name="maxDownloadTaskNum" value="10"/>
 		<property name="maxAnalyzerTaskNum" value="7"/>
 		<property name="async" value="true"/>
 	</bean>

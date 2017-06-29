@@ -37,7 +37,7 @@ public interface SpiderExecutor extends RuntimeDataHolder {
 
 	public static final String DEFAULT_SAVE_LOCATION = "E:\\API\\SpiderPhoto";
 	public static final String SPIDER_CACHE_SAVE_LOCATION = "E:\\API\\SpiderPhoto\\.cache";
-	public static final int MAX_DOWNLOAD_TASK_NUM = 10;
+	public static final int MAX_DOWNLOAD_TASK_NUM = 6;
 	public static final boolean OVERRIDE = false;
 	public static final PathMode PATH_MODE = PathMode.SITE_TYPE;
 	public static final NamedMode NAMED_MODE = NamedMode.DATE_TITLE_AUTHOR;
