@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="TRACE">
+
+	<appenders>
+		<Console name="Console" target="SYSTEM_OUT">  
+	      <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{0}.%M:%L - %msg%n"/>  
+	    </Console>  
+	</appenders>
+	
+	<loggers>
+		<logger name="com.cnblogs.hoojo" level="DEBUG" />
+		<logger name="org.springframework" level="INFO" />
+		<logger name="org.apache" level="INFO" />
+	
+		<root level="DEBUG">
+			<appender-ref ref="Console" />
+		</root>
+	</loggers>
+</configuration>  

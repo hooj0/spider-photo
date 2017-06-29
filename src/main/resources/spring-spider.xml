@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+						http://www.springframework.org/schema/util 
+						http://www.springframework.org/schema/beans/spring-util-3.2.xsd">
+
+	<bean id="options" class="com.cnblogs.hoojo.config.Options">
+		<property name="saveLocation" value="E:\\图片抓取"/>
+		<property name="beginPage" value="0"/>
+		<property name="pageNum" value="20"/>
+		<property name="maxDownloadTaskNum" value="15"/>
+		<property name="maxAnalyzerTaskNum" value="7"/>
+		<property name="async" value="true"/>
+	</bean>
+
+	<bean id="cnuHot" class="com.cnblogs.hoojo.support.CNUSiteSpider">
+		<constructor-arg value="CNU主站人像-热门" />
+		<constructor-arg value="http://www.cnu.cc/discoveryPage/hot-0?page=" />
+		<constructor-arg ref="options"/>
+	</bean>
+
+	<bean id="oneKeyTask" class="com.cnblogs.hoojo.task.OneKeyExtractTask">
+		<property name="locations">
+			<list>
+				<ref local="cnuHot"/>
+			</list>
+		</property>
+	</bean>
+</beans>
