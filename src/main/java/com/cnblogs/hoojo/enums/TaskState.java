@@ -1,5 +1,7 @@
 package com.cnblogs.hoojo.enums;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 /**
  * <b>function:</b> 任务状态
  * @author hoojo
@@ -11,6 +13,7 @@ package com.cnblogs.hoojo.enums;
  * @email hoojo_@126.com
  * @version 1.0
  */
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum TaskState {
 
 	START("启动"), WAIT("等待"), RUN("运行"), FINISH("完成"), PAUSE("暂停"), EXCEPTION("异常");

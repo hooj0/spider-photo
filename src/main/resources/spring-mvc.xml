@@ -19,7 +19,7 @@
 	<!-- 添加注解支持 -->
 	<mvc:annotation-driven conversion-service="conversionService">
 		<mvc:message-converters >
-			<bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
+			<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
 				<property name="supportedMediaTypes" value="text/html;charset=UTF-8"></property>
 			</bean>
 		</mvc:message-converters>
@@ -43,7 +43,7 @@
 	</bean>
 	
 	<!-- JSON 视图解析器 -->
-	<bean id="json" class="org.springframework.web.servlet.view.json.MappingJacksonJsonView">
+	<bean id="json" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
 		<property name="contentType" value="text/html;charset=utf-8"></property>
 	</bean>
 	

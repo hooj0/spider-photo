@@ -116,7 +116,7 @@ public class CNUBlogSpider extends AbstractSpider {
 		options.setAsync(true);
 		options.setPathMode(PathMode.SITE_TYPE_AUTHOR);
 		options.setNamedMode(NamedMode.DATE_TITLE);
-		//options.setMaxSpiderWorksNum(1);
+		options.setMaxSpiderWorksNum(1);
 		//options.setMatch("98471");
 		
 		SpiderExecutor spider = new CNUBlogSpider("CNU博客-双喜儿", "http://www.cnu.cc/users/106718?page=", options);

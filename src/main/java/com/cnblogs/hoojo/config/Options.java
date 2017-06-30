@@ -34,7 +34,7 @@ public class Options {
 	private Method method;
 	private long timeout;
 	private boolean override = false;
-	private boolean async = false;
+	private boolean async = true;
 
 	private NamedMode fileNameMode;
 	private NamedMode namedMode;

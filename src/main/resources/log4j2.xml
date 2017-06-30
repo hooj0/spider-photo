@@ -9,10 +9,10 @@
 	
 	<loggers>
 		<logger name="com.cnblogs.hoojo" level="DEBUG" />
-		<logger name="org.springframework" level="INFO" />
-		<logger name="org.apache" level="INFO" />
+		<logger name="org.springframework" level="TRACE" />
+		<logger name="org.apache" level="TRACE" />
 	
-		<root level="DEBUG">
+		<root level="TRACE">
 			<appender-ref ref="Console" />
 		</root>
 	</loggers>

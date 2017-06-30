@@ -149,6 +149,9 @@ public class DownloadFileTask extends ApplicationLogging implements Runnable {
             URLConnection connec = url.openConnection();
             connec.setConnectTimeout(new Long(spiderExecutor.getOptions().getTimeout()).intValue());
             
+            downloadInfo.setSize(connec.getContentLength());
+            downloadInfo.setType(connec.getContentType());
+            
             File file = new File(this.savePath + File.separator + downloadInfo.getFileName());
             if (file.exists() && !overwrite) {
             	
@@ -179,9 +182,6 @@ public class DownloadFileTask extends ApplicationLogging implements Runnable {
             info.append("网络文件的类型：" + connec.getContentType() + "\n");
             info.append("长度：" + connec.getContentLength() + "\n");
             info.append("正在下载:" + file.getAbsolutePath());
-            
-            downloadInfo.setSize(connec.getContentLength());
-            downloadInfo.setType(connec.getContentType());
             
             // 创建网络文件的输入流
             is = connec.getInputStream();

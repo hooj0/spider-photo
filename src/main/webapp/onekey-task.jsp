@@ -1,5 +1,10 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<c:set var="ctxPath" value="${pageContext.request.contextPath}"/>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
@@ -220,7 +225,7 @@
 			auto = auto || true
 			
 			$.ajax({
-				url: "${pageContext.request.contextPath}/task-info",
+				url: "${pageContext.request.contextPath}/task-progress",
 				type: "POST",
 				async: false,
 				dataType: "json",      
@@ -311,50 +316,103 @@
 	<div style="margin: 50px auto 50px;" align="center">
 		<form action="${pageContext.request.contextPath}/run" method="post">
 		
-			<table width="950">
+			<table width="1050">
 				<thead>
 					<tr>
 						<th colspan="4">图片抓取器</th>
 					</tr>
 				</thead>
+				
+				<tr align="center">
+					<td>任务类型:</td>
+					<td align="left" style="padding-left: 2em;">
+						<select name="spiderClazz">
+							<option>存储路径命名方式</option>
+							
+							<c:forEach items="${taskTypes }" var="taskType">
+								<option value="${taskType }">${taskType.desc }</option>
+							</c:forEach>
+						</select>
+					</td>
+				</tr>
 					
 				<tr align="center" valign="middle">
 					<td width="20%">目标网址: </td>
 					<td colspan="3" width="75%" align="left" style="padding-left: 2em;">
-						<input type="text" name="targetURL" placeholder="目标网址" value="${param.targetURL }" style="width: 650px;"/>
+						<input type="text" name="spiderURL" placeholder="目标网址" value="${param.spiderURL }" style="width: 650px;"/>
+					</td>
+				</tr>
+				
+				<tr align="center">
+					<td>站点名称:</td>
+					<td align="left" style="padding-left: 2em;">
+						<input type="text" name="site" placeholder="目标网址" value="${param.site }" style="width: 650px;"/>
+					</td>
+					<td>同文件是否覆盖:</td>
+					<td align="left" style="padding-left: 2em;">
+						<label> <input type="checkbox" name="override" value="true"/>同文件覆盖</label>
+					</td>
+				</tr>
+				
+				<tr align="center">
+					<td>任务名称:</td>
+					<td align="left" style="padding-left: 2em;">
+						<input type="text" name="spiderName" placeholder="输入任务名称" value="${param.spiderName }" style="width: 250px;"/>
+					</td>
+					<td>匹配字符串:</td>
+					<td align="left" style="padding-left: 2em;">
+						<input type="text" name="match" placeholder="输入匹配字符串" value="${param.match }" style="width: 250px;"/>
 					</td>
 				</tr>
 				
 				<tr align="center" valign="middle">
 					<td width="20%">开始页: </td>
 					<td width="30%" align="left" style="padding-left: 2em;">
-						<input type="text" name="startPage" placeholder="输入开始页" value="${param.startPage }" style="width: 250px;"/>
+						<input type="number" name="beginPage" placeholder="输入开始页" value="${param.beginPage }" style="width: 250px;"/>
 					</td>
-					<td width="20%">结束页: </td>
+					<td width="20%">抓取页数: </td>
 					<td width="30%" align="left" style="padding-left: 2em;">
-						<input type="text" name="endPage" placeholder="输入结束页" value="${param.endPage }" style="width: 250px;"/>
+						<input type="number" name="pageNum" placeholder="输入页数" value="${param.pageNum }" style="width: 250px;"/>
+					</td>
+				</tr>
+
+				<tr align="center" valign="middle">
+					<td width="20%">最大抓取数: </td>
+					<td width="30%" align="left" style="padding-left: 2em;">
+						<input type="number" name="maxSpiderWorksNum" placeholder="抓取博文数" value="${param.maxSpiderWorksNum }" style="width: 250px;"/>
+					</td>
+					<td width="20%">下载任务数: </td>
+					<td width="30%" align="left" style="padding-left: 2em;">
+						<input type="number" name="maxDownloadTaskNum" placeholder="下载任务数" value="${param.maxDownloadTaskNum }" style="width: 250px;"/>
 					</td>
 				</tr>
 				
 				<tr align="center">
-					<td>保存路径:</td>
-					<td align="left" style="padding-left: 2em;">
-						<input type="text" name="saveImagePath" placeholder="输入保存路径" value="${param.saveImagePath }" style="width: 250px;"/>
-					</td>
-					<td>路径匹配字符串:</td>
-					<td align="left" style="padding-left: 2em;">
-						<input type="text" name="match" placeholder="输入路径匹配字符串" value="${param.match }" style="width: 250px;"/>
-					</td>
-				</tr>
-				
-				<tr align="center">
-					<td width="20%">最大下载数:</td>
-					<td align="left" style="padding-left: 2em;">
-						<input type="text" name="maxDownloadNum" placeholder="输入最大下载数" value="${param.maxDownloadNum }" style="width: 250px;"/>
-					</td>
-					<td align="center" style="padding-left: 2em;" colspan="2">
-						<label> <input type="checkbox" name="overwrite" value="true"/>相同文件覆盖</label>&nbsp;&nbsp;&nbsp;&nbsp;
-						<label> <input type="checkbox" name="usedPageDir" checked="checked" value="true"/>采用页码路径规则</label>
+					<td width="20%">路径命名方式:</td>
+					<td align="left" style="padding-left: 2em;" colspan="3">
+						<select name="pathMode">
+							<option>存储路径命名方式</option>
+							
+							<c:forEach items="${pathModes }" var="pathMode">
+								<option value="${pathMode }">${pathMode.desc }</option>
+							</c:forEach>
+						</select>
+						&nbsp;&nbsp;
+						<select name="namedMode">
+							<option>目录命名方式</option>
+							
+							<c:forEach items="${namedModes }" var="namedMode">
+								<option value="${namedMode }">${namedMode.desc }</option>
+							</c:forEach>
+						</select>
+						&nbsp;&nbsp;
+						<select name="fileNameMode">
+							<option>文件命名方式</option>
+							
+							<c:forEach items="${namedModes }" var="namedMode">
+								<option value="${namedMode }">${namedMode.desc }</option>
+							</c:forEach>
+						</select>
 					</td>
 				</tr>
 				

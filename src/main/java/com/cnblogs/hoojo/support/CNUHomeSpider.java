@@ -35,8 +35,10 @@ public class CNUHomeSpider extends AbstractSpider {
     String worksURL = "http://www.cnu.cc/works/";
     String imageURL = "http://img.cnu.cc/uploads/images/920/";
 
-    public CNUHomeSpider(String spiderName, String spiderURL, Options spiderOptions) {
-        super(spiderName, spiderURL, spiderOptions);
+    public CNUHomeSpider(String spiderName, String spiderURL, Options options) {
+        super(spiderName, spiderURL, options);
+        
+        System.out.println(options);
     }
 
     @SuppressWarnings("unchecked")
