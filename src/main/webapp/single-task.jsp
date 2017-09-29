@@ -15,132 +15,12 @@
 	<meta name="renderer" content="webkit|ie-comp|ie-stand" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 	
-	<script type="text/javascript" src="${pageContext.request.contextPath}/jslib/jquery-1.8.3.min.js" ></script>
-	<style type="text/css">
-		td {
-			border: 1px solid black;
-			background-color: #eeeeee;
-			padding: 5px;
-		}
-		
-		table {
-			border-collapse: collapse;
-			border-spacing: 5px;
-		}
-		
-		th {
-			border: 1px solid black;
-			background: #9DACBF;
-			color: #FFF;
-			height: 20px;
-			line-height: 20px
-		}
-		
-		tfoot th {
-			background: #cfcfcf;
-			color: #000;
-		}
-		
-		tfoot th em {
-			color: #f40;
-			font-size: 14px;
-		}
-		
-		body {
-			font-family: "宋体", "Arial", "Helvetica";
-			font-size: 12px;
-			font-style: normal;
-			font-weight: lighter;
-		}
-		
-		.head {
-			background-color: #ccc;
-			font-weight: bold;
-		}
-		
-		.head b {
-			color: #337ab7;
-		}
-		
-		.odd td {
-			background-color: white;
-		}
-		
-		.even td {
-			background-color: lavender;
-		}
-		
-		.own {
-			margin-left: 4em;
-		}
-			
-		ul {
-			list-style: none;
-			padding: 0;
-			margin: 0;
-			font-size: 12px;
-		}
-		
-	    .tabBox{
-	        width: 92%;
-	        margin: 35px auto;
-	    }
-		
-	    .tabMenu{
-	        height: 45px;
-	        width: 100%;
-	        border-left: 1px solid #ccc;
-	        border-top: 1px solid #ccc;
-	    }
-	    
-	    .tabMenu li {
-	        float: left;
-	        height: 45px;
-	        width: 33.2%;
-	        border-right: 1px solid #ccc;
-	        border-bottom: 1px solid #ccc;
-	        text-align: center;
-	        line-height: 25px;
-	        background: #eee;
-	        cursor: pointer;
-	    }
-	    
-	    .tabMenu .active {
-	        background: #9dacbf;
-	        color: white;
-	    }
-	    
-	    #tabContent {
-	        border:1px solid #ccc;
-	        border-top-width:0;
-	        width: 100% - 4;
-	    }
-	    
-	    #tabContent .hidden {
-	        display: none;
-	    }
-	    
-	    b {
-	    	font-weight: bold;
-	    }
-	    
-	    a {
-		    cursor: pointer;
-		    display: inline-block;
-		    height: 25px;
-		    margin-left: 5px;
-		    padding: 0 11px;
-		    
-		    color: blue;
-		    outline: 0 none;
-		    text-decoration: none;
-		}
-	    
-	    a.hover {
-	    	color: red;
-	    }
-	</style>
+	<link rel="stylesheet" href="${ctxPath}/res/css/jquery.treegrid.css"/>
+	<link rel="stylesheet" href="${ctxPath}/res/css/core.css"/>
 	
+	<script type="text/javascript" src="${ctxPath}/res/jslib/jquery-1.8.3.min.js" ></script>
+	<script type="text/javascript" src="${ctxPath}/res/jslib/jquery.treegrid.min.js"></script>
+    
 	<script type="text/javascript">
 		
 		function FormatNumberLength(num, length) {
@@ -165,9 +45,6 @@
 		};
 		
 		function dateFormat(t) {
-			//var now = new Date();
-			//var date = new Date(t * 1000 - now.getTimezoneOffset() * 60000);
-			//return date.toLocaleString();
 			var date = new Date(t);
 			return date.getFullYear() + "-" + FormatNumberLength(date.getMonth() + 1, 2)
 					+ "-" + FormatNumberLength(date.getDate(), 2) + " "
@@ -190,34 +67,94 @@
 		    }
 		};
 		
-		function taskViewTemplate(downloadInfo) {
+		var getDownloadTaskHeadTpls = function (type, size)  {
+			var tpl = {
+				'downloading': ['<tr class="treegrid-downloading">',
+					'<td><b>正在下载资源</b></td>',
+					'<td colspan="9"><i class="downloading">总共( <span style="color: red;">', size, '</span> )个</i></td>',
+				'</tr>'].join(""),
+				
+				'download-finish': ['<tr class="treegrid-download-finish">',
+					'<td><b>下载完成资源</b></td>',
+					'<td colspan="9"><i class="download-finish">总共( <span style="color: red;">', size, '</span> )个</i></td>',
+				'</tr>'].join(""),
+				
+				'download-error': ['<tr class="treegrid-download-error">',
+					'<td><b>下载错误资源</b></td>',
+					'<td colspan="9"><i class="download-error">总共( <span style="color: red;">', size, '</span> )个</i></td>',
+				'</tr>'].join("")
+			};
+			
+			return tpl[type];
+		};
+		
+		function downloadTaskViewTemplate(downloadInfo, index, type) {
 			return [
-				"<tr align='center'>",
+				"<tr align='center' class='treegrid-", index, " treegrid-parent-", type, "'>",
+					"<td colspan='2'>", (~~index + 1), "</td>",
 					"<td>", downloadInfo.worksTitle, "</td>",
 					"<td>", downloadInfo.fileName, "</td>",
 					"<td>", downloadInfo.type, "</td>",
 					
 					"<td>", humanFileSize(downloadInfo.size), "</td>",
 					"<td>", downloadInfo.usedTime, "</td>",
-					"<td>", dateFormat(downloadInfo.beginTime), "</td>",
-					"<td>", dateFormat(downloadInfo.endTime), "</td>",
+					"<td>", dateFormat(downloadInfo.beginTime), "<br/>", dateFormat(downloadInfo.endTime), "</td>",
 					"<td>", downloadInfo.url, "</td>",
 				"</tr>"
 			].join("");
 		};
 		
-		function renderTaskView(data) {
+		function spiderTaskViewTemplate(spiderInfo) {
+			return [
+				"<tr align='center'>",
+					"<td>", spiderInfo.site, "</td>",
+					"<td> <img src='", spiderInfo.avatar, "' height='50'/> </td>",
+					"<td> <a href='", spiderInfo.link, "' target='_blank'>", spiderInfo.title, "</a> </td>",
+					"<td> <a href='", spiderInfo.blog, "' target='_blank'>", spiderInfo.author, "</a> </td>",
+					"<td>", spiderInfo.type, "</td>",
+					
+					"<td>", spiderInfo.date, "</td>",
+					"<td>", (spiderInfo.finish ? '已完成' : '未完成'), " (", spiderInfo.resources.length, "/", spiderInfo.downloadCompletedNum, ")</td>",
+					"<td align='left'><p>热度：", spiderInfo.attract, "</p> <p>描述：", spiderInfo.comment, "</p> </td>",
+				"</tr>"
+			].join("");
+		};
+		
+		function renderDownloadTaskView(data) {
 
-			$("#loading").text(data.downloadState.desc);
+			$("#downloadState").text(data.downloadState.desc);
 			
 			data = data.downloadHolder;
+			var renderTpls = [];
+			for (var type in data) {
+				
+				if (data[type]) {
+					var tpls = [ getDownloadTaskHeadTpls(type, data[type].length) ];
+					for (var i in data[type]) {
+						var downloadInfo = data[type][i];
+						tpls.push(downloadTaskViewTemplate(downloadInfo, i, type));
+					}
+					
+					renderTpls.push(tpls.join(""));
+				}
+			}
+			
+			$(".download-task-view").find("tbody").html(renderTpls.join(""));
+			$('.download-task-view').treegrid({ treeColumn: 1 });
+		};
+		
+		function renderSpiderTaskView(data) {
+
+			$("#spiderState").text(data.spiderState.desc);
+			
+			data = data.spiderHolder;
 			for (var type in data) {
 				
 				if (data[type]) {
 					var tpls = [];
 					for (var i in data[type]) {
-						var downloadInfo = data[type][i];
-						tpls.push(taskViewTemplate(downloadInfo));
+						var spiderInfo = data[type][i];
+						tpls.push(spiderTaskViewTemplate(spiderInfo));
 					}
 					$("#" + type).find("tbody").html(tpls.join(""));
 					$("." + type).find("span").text(data[type].length);
@@ -233,15 +170,24 @@
 				return;
 			}
 			
+			var params = {
+				spiderKey: $("#taskKey").val(), 
+				showDownloadHolder: $("#show-download-task-view").is(":checked"),
+				showDownloadFinish: $("#show-download-finish-view").is(":checked"),
+				showDownloading: $("#show-downloading-view").is(":checked"),
+				showDownloadError: $("#show-download-error-view").is(":checked")
+			};
+			
 			$.ajax({
 				url: "${pageContext.request.contextPath}/single-task-progress",
 				type: "POST",
 				async: false,
 				dataType: "json",      
-	            data: { spiderKey: $("#taskKey").val() }, 
+	            data: params, 
 				success: function(data) {
 					if (data) {
-						renderTaskView(data);
+						renderSpiderTaskView(data);
+						renderDownloadTaskView(data);
 					} else {
 						alert("操作失败.");
 					}
@@ -330,7 +276,21 @@
 				window.location = "${ctxPath}/console/single-task?taskType=" + $(this).val();
 			});
 			
+			$(".go-onekey-task").click(function () {
+				window.location = "${ctxPath}/console/onekey-task";
+			});
+			
 			bindData();
+			
+			$('.download-task-view').treegrid({ treeColumn: 1 });
+			
+			$('#show-download-task-view').click(function () {
+				if (this.checked) {
+					$(".download-task-view").show();
+				} else {
+					$(".download-task-view").hide();
+				}	
+			});
 		});
 	</script>
 </head>
@@ -350,7 +310,7 @@
 					<td>任务类型:</td>
 					<td align="left" style="padding-left: 2em;" colspan="3">
 						<select name="taskType" class="choose-task-type">
-							<option value="">存储路径命名方式</option>
+							<option value="">选择任务类型</option>
 							
 							<c:forEach items="${taskTypes }" var="taskType">
 								<option value="${taskType }">${taskType.desc }</option>
@@ -454,22 +414,33 @@
 		</form>
 		
 		<hr/>
-		
+
 		<div class="tabBox">
-			<div id="loading" style="color: red; text-align: center; font-weight: bold; padding: 10px 0;">${error }</div>
+			<div style="color: red; text-align: center; font-weight: bold; padding: 10px 0;">
+			</div>
 			
 			<div class="tool-bar">
 				<table width="100%" border="0">
 					
 					<tr align="center">
-						<td align="left" style="padding-left: 2em; display: none;" width="20%">
+						<td align="left" style="padding-left: 2em; display: ;" width="20%">
+							抓取状态：<b id="spiderState"></b>；
+							&nbsp;&nbsp;&nbsp;&nbsp;
+							下载状态：<b id="downloadState">${error }</b>；
 						</td>
 						
-						<td align="right" style="padding-right: 2em; display: none;">
+						<td align="right" style="padding-right: 2em; display: ;">
+							<label> <input type="checkbox" id="show-download-finish-view" checked="checked" />显示下载完成</label>
+							&nbsp;&nbsp;
+							<label> <input type="checkbox" id="show-downloading-view" checked="checked" />显示正在下载</label>
+							&nbsp;&nbsp;
+							<label> <input type="checkbox" id="show-download-error-view" checked="checked" />显示等待下载</label>
+							&nbsp;&nbsp;
+							<label> <input type="checkbox" id="show-download-task-view" checked="checked" />显示下载情况</label>
 						</td>
 						
-						<td width="25%" align="right">
-							<label> 刷新间隔：<input type="text" class="refreshInterval" value="5" />(ms)</label>
+						<td width="35%" align="right">
+							<label> 刷新间隔：<input type="text" class="refreshInterval" value="5" style="width: 50px;"/>(ms)</label>
 							<input type="button" value="&nbsp;&nbsp;重启监视&nbsp;&nbsp;" class="restart-refresh"/>
 							<input type="button" value="&nbsp;&nbsp;停止刷新&nbsp;&nbsp;" class="stop-refresh"/>
 							<input type="button" value="&nbsp;&nbsp;手动刷新&nbsp;&nbsp;" onclick="queryDownloadTask('unAuto')"/>
@@ -477,71 +448,93 @@
 					</tr>
 				</table>
 			</div>
-			
+
 			<div class="tabMenu">
 	            <ul>
-					<li onclick="tabChange(this, 'tabContent')" class="active"><b>正在下载资源</b><br/><i class="downloading">总共( <span style='color: red;'>0</span> )个</i></li>
-					<li onclick="tabChange(this, 'tabContent')"><b>下载完成资源</b><br/><i class="download-finish">总共( <span style='color: red;'>0</span> )个</i></li>
-					<li onclick="tabChange(this, 'tabContent')"><b>下载错误资源</b><br/><i class="download-error">总共( <span style='color: red;'>0</span> )个</i></li>
+					<li onclick="tabChange(this, 'tabContent')" class="active"><b>正在抓取图文</b><br/><i class="spidering">总共( <span style='color: red;'>0</span> )个</i></li>
+					<li onclick="tabChange(this, 'tabContent')"><b>抓取完成图文</b><br/><i class="spider-finish">总共( <span style='color: red;'>0</span> )个</i></li>
+					<li onclick="tabChange(this, 'tabContent')"><b>等待抓取图文</b><br/><i class="spider-wait">总共( <span style='color: red;'>0</span> )个</i></li>
 	            </ul>
 	        </div>
 			
 	        <div id="tabContent">
-	        	<table width="100%" id="downloading">
+	        	<table width="100%" id="spidering">
 					<thead>
 						<tr>
-							<th width="10%">所属博文</th>
-							<th width="20%">文件名称</th>
-							<th width="5%">文件类型</th>
+							<th width="10%">站点</th>
+							<th width="8%">博文封面</th>
+							<th width="20%">博文名称</th>
+							<th width="10%">作者</th>
 							
-							<th width="5%">文件大小</th>
-							<th width="10%">使用时间</th>
-							<th width="15%">任务开始时间</th>
-							<th width="15%">任务结束时间</th>
-							<th>URL</th>
+							<th width="10%">类型</th>
+							<th width="10%">发布时间</th>
+							<th width="10%">下载情况</th>
+							<th>其他</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+	        	
+	        	<table width="100%" id="spider-finish" class="hidden">
+					<thead>
+						<tr>
+							<th width="10%">站点</th>
+							<th width="8%">博文封面</th>
+							<th width="20%">博文名称</th>
+							<th width="10%">作者</th>
+							
+							<th width="10%">类型</th>
+							<th width="10%">发布时间</th>
+							<th width="10%">下载情况</th>
+							<th>其他</th>
 						</tr>
 					</thead>
 					<tbody>
 					</tbody>
 				</table>
 				
-				<table width="100%" id="download-finish" class="hidden">
+				<table width="100%" id="spider-wait" class="hidden">
 					<thead>
 						<tr>
-							<th width="10%">所属博文</th>
-							<th width="20%">文件名称</th>
-							<th width="5%">文件类型</th>
+							<th width="10%">站点</th>
+							<th width="8%">博文封面</th>
+							<th width="20%">博文名称</th>
+							<th width="10%">作者</th>
 							
-							<th width="5%">文件大小</th>
-							<th width="10%">使用时间</th>
-							<th width="15%">任务开始时间</th>
-							<th width="15%">任务结束时间</th>
-							<th>URL</th>
+							<th width="10%">类型</th>
+							<th width="10%">发布时间</th>
+							<th width="10%">下载情况</th>
+							<th>其他</th>
 						</tr>
 					</thead>
 					<tbody>
 					</tbody>
 				</table>
-				
-				<table width="100%" id="download-error" class="hidden">
-					<thead>
-						<tr>
-							<th width="10%">所属博文</th>
-							<th width="20%">文件名称</th>
-							<th width="5%">文件类型</th>
-							
-							<th width="5%">文件大小</th>
-							<th width="10%">使用时间</th>
-							<th width="15%">任务开始时间</th>
-							<th width="15%">任务结束时间</th>
-							<th>URL</th>
-						</tr>
-					</thead>
-					<tbody>
-					</tbody>
-				</table>
+	        	
 	        </div>
+	        
+	        <table class="download-task-view" width="100%" style="margin-top: 10px;">
+				<thead>
+					<tr>
+						<th width="10%">类型</th>
+						<th width="10%">资源数量</th>
+						<th width="20%">所属博文</th>
+						<th width="20%">文件名称</th>
+						<th width="5%">文件类型</th>
+
+						<th width="5%">文件大小</th>
+						<th width="10%">使用时间</th>
+						<th width="10%">开始结束时间</th>
+						<th width="15%">URL</th>
+					</tr>
+				</thead>
+
+				<tbody>
+				</tbody>
+			</table>
 	    </div>
 	</div>
+	
 </body>
 </html>

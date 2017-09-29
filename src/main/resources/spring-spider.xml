@@ -15,6 +15,7 @@
 
 		<property name="pathMode" value="SITE_TYPE"/>
 		<property name="namedMode" value="DATE_TITLE_AUTHOR"/>
+		<property name="MaxSpiderWorksNum" value="1"/>
 	</bean>
 	
 	<bean id="cunBlogOptions" parent="options">
@@ -46,8 +47,8 @@
 		<property name="executors">
 			<list>
 				<ref local="cnuBlog"/>
-				<!-- <ref local="cnuHot"/> -->
-				<!-- <ref local="cnuBlog"/> -->
+				<ref local="cnuHot"/>
+				<ref local="cnuHome"/>
 			</list>
 		</property>
 	</bean>
