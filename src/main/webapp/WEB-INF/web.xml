@@ -59,6 +59,6 @@
 	</servlet-mapping>
 
 	<welcome-file-list>
-		<welcome-file>/single-task.jsp</welcome-file>
+		<welcome-file>/console/single-task</welcome-file>
 	</welcome-file-list>
 </web-app>
