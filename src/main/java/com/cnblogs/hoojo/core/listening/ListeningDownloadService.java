@@ -2,6 +2,7 @@ package com.cnblogs.hoojo.core.listening;
 
 import java.io.File;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -157,6 +158,8 @@ public class ListeningDownloadService extends ListeningDownloadWrapper {
 				while (state != TaskState.FINISH) {
 					log.info(String.format("等待下载图文：%s，正在下载图文：%s，下载完成图文：%s", analyzerDataHolder.getSpiderWaiting().size(), analyzerDataHolder.getSpidering().size(), analyzerDataHolder.getSpiderCompleted().size()));
 					
+					printDownloadingWorksInfoTask();
+					
 					try {
 	                    Thread.sleep(GlobalConst.ListeningDownloadServiceConst.WORKS_INFO_QUQUE_IDLE_MINUTES);
                     } catch (InterruptedException e) {
@@ -165,6 +168,18 @@ public class ListeningDownloadService extends ListeningDownloadWrapper {
                 }
 			}
 		}, executor.getSpiderName() + "-监控下载信息").start();
+	}
+	
+	private void printDownloadingWorksInfoTask() {
+		
+		if (!analyzerDataHolder.getSpidering().isEmpty()) {
+			
+			System.out.println("\r\n正在下载图文：");
+			Iterator<Works> iter = analyzerDataHolder.getSpidering().iterator();
+			while (iter.hasNext()) {
+				System.out.println(iter.next());
+			}
+		}
 	}
 	
 	private int sleepDownloadTask(int skip) {
@@ -302,8 +317,12 @@ public class ListeningDownloadService extends ListeningDownloadWrapper {
 	private void downloadAttachment(Works works, String savePath) {
 		
 		this.cleanSmallPic(savePath);
-		this.downloadSmallPic(works, works.getCover(), "_封面", savePath);
-		this.downloadSmallPic(works, works.getAvatar(), "__头像", savePath);
+		if (StringUtils.isNotBlank(works.getCover())) {
+			this.downloadSmallPic(works, works.getCover(), "_封面", savePath);
+		}
+		if (StringUtils.isNotBlank(works.getAvatar())) {
+			this.downloadSmallPic(works, works.getAvatar(), "__头像", savePath);
+		}
 		this.saveDescriptionFile(works, "__Description.txt", savePath);
 	}
 	

@@ -85,6 +85,8 @@ public class DownloadFileTask extends ApplicationLogging implements Runnable {
             		downloadDataHolder.getDownloadErrored().add(downloadInfo);
             		
             		isCompleted = true;
+            		
+            		TASK_NUM--;
             	} else {
             		downloadInfo.retryDownload();
             		

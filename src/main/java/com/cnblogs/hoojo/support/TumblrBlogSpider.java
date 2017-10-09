@@ -62,7 +62,9 @@ public class TumblrBlogSpider extends AbstractSpider {
 					works.getResources().add(img.attr("src"));
 				}
 				
-				queue.add(works);
+				if (images.size() > 0) {
+					queue.add(works);
+				}
 			}
 		} catch (Exception e) {
 			throw e;
@@ -79,8 +81,8 @@ public class TumblrBlogSpider extends AbstractSpider {
 	public static void main(String[] args) {
 		Options options = new Options();
 		options.setBeginPage(0);
-		options.setPageNum(5);
-		options.setAsync(true);
+		options.setPageNum(27);
+		//options.setAsync(true);
 		options.setPathMode(PathMode.SITE);
 		options.setNamedMode(NamedMode.DATE);
 		options.setFileNameMode(NamedMode.TITLE_AUTHOR);
