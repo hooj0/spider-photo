@@ -81,7 +81,7 @@ public class TumblrBlogSpider extends AbstractSpider {
 	public static void main(String[] args) {
 		Options options = new Options();
 		options.setBeginPage(0);
-		options.setPageNum(27);
+		options.setPageNum(30);
 		//options.setAsync(true);
 		options.setPathMode(PathMode.SITE);
 		options.setNamedMode(NamedMode.DATE);

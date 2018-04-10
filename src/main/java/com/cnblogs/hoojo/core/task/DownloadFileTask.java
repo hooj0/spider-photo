@@ -1,9 +1,12 @@
 package com.cnblogs.hoojo.core.task;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Date;
@@ -129,7 +132,7 @@ public class DownloadFileTask extends ApplicationLogging implements Runnable {
         long timed = System.currentTimeMillis();
         
         InputStream is = null;
-        FileOutputStream fos =  null;
+        OutputStream fos =  null;
         try {
         	
         	if (StringUtils.isBlank(targetURL)) {
@@ -186,9 +189,9 @@ public class DownloadFileTask extends ApplicationLogging implements Runnable {
             info.append("正在下载:" + file.getAbsolutePath());
             
             // 创建网络文件的输入流
-            is = connec.getInputStream();
+            is = new BufferedInputStream(connec.getInputStream());
             // 创建本地文件输出流
-            fos = new FileOutputStream(file);
+            fos = new BufferedOutputStream(new FileOutputStream(file));
 
             // 读取网络文件到本地文件
             byte[] buff = new byte[GlobalConst.DownloadFileTaskConst.READ_FILE_BUFFER_LENGTH];
