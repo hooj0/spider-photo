@@ -40,7 +40,8 @@ public abstract class FilePathNameUtils {
 	// 空白字符集ascii
     private static final Set<Integer> EXCLUDE_ASCII = Sets.newHashSet( 127, 129, 141, 143, 144, 151, 157 );
     
-    public static boolean includeAsciiBlank(String src) {
+    @SuppressWarnings("unlikely-arg-type")
+	public static boolean includeAsciiBlank(String src) {
         
         for (int i = 0, len = src.length(); i < len; i++) {
             long ascii = src.charAt(i);
