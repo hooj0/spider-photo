@@ -25,10 +25,15 @@ public class Options {
 	private String spiderURL;
 	private String match;
 	private String saveLocation;
+	// 开始页
 	private int beginPage;
+	// 抓取页数
 	private int pageNum;
+	// 最大分析任务数量
 	private int maxAnalyzerTaskNum;
+	// 下载任务数
 	private int maxDownloadTaskNum;
+	// 最大抓取博文数，如 10，抓够10篇就完成
 	private int maxSpiderWorksNum;
 
 	private Method method;
