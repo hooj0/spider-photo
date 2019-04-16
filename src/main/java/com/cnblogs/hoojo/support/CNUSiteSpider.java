@@ -52,7 +52,7 @@ public class CNUSiteSpider extends AbstractSpider {
 			String minType = StringUtils.substringBeforeLast(url, "?");
 			String type = doc.select("#navbar li a[href^='" + maxType + "']").text() 
 					+ " - " + doc.select("div.menu a.selected").text() 
-					+ " - " + doc.select("div.group a[href^='" + minType + "']").text();
+					+ " - " + StringUtils.defaultIfEmpty(doc.select("div.group a[href^='" + minType + "']").text(), "全部");
 			
 			for (Element el : articleEls) {
 				Works works = new Works();
@@ -107,22 +107,39 @@ public class CNUSiteSpider extends AbstractSpider {
 		
 		Options options = new Options();
 		options.setBeginPage(0);
-		options.setPageNum(1);
+		options.setPageNum(3);
 		options.setAsync(true);
 		options.setPathMode(PathMode.SITE_TYPE);
         options.setNamedMode(NamedMode.DATE_TITLE_AUTHOR);
+        options.setMaxDownloadTaskNum(3);
 		
 		SpiderExecutor spider = null; 
 		/*
-		spider = new CNUSiteSpider("CNU主站人像-热门", "http://www.cnu.cc/discoveryPage/hot-%E4%BA%BA%E5%83%8F?page=", options);
-		spider.execute();
-
-		spider = new CNUSiteSpider("CNU主站人像-推荐", "http://www.cnu.cc/discoveryPage/recommend-%E4%BA%BA%E5%83%8F?page=", options);
+		spider = new CNUSiteSpider("CNU主站原创-热门", "http://www.cnu.cc/discoveryPage/hot-0?page=", options);
 		spider.execute();
 		*/
+		spider = new CNUSiteSpider("CNU主站原创-推荐", "http://www.cnu.cc/discoveryPage/recommend-0?page=", options);
+		spider.execute();
 		
-        options.setPageNum(23);
-        spider = new CNUHomeSpider("CNU主站首页", "http://www.cnu.cc/selectedsFlow/", options);
-        spider.execute();
+		/*
+		spider = new CNUSiteSpider("CNU主站原创-热门-人像", "http://www.cnu.cc/discoveryPage/hot-%E4%BA%BA%E5%83%8F?page=", options);
+		spider.execute();
+
+		spider = new CNUSiteSpider("CNU主站原创-推荐-人像", "http://www.cnu.cc/discoveryPage/recommend-%E4%BA%BA%E5%83%8F?page=", options);
+		spider.execute();
+		
+		//-------------------------------------
+		spider = new CNUSiteSpider("CNU主站灵感-热门", "http://www.cnu.cc/inspirationPage/hot-0?page=", options);
+		spider.execute();
+		
+		spider = new CNUSiteSpider("CNU主站灵感-最新", "http://www.cnu.cc/inspirationPage/recent-0?page=", options);
+		spider.execute();
+		
+		spider = new CNUSiteSpider("CNU主站灵感-热门-人像", "http://www.cnu.cc/inspirationPage/hot-111?page=", options);
+		spider.execute();
+		
+		spider = new CNUSiteSpider("CNU主站灵感-最新-人像", "http://www.cnu.cc/inspirationPage/recent-111?page=", options);
+		spider.execute();
+		*/
 	}
 }
