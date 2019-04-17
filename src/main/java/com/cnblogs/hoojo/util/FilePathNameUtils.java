@@ -10,8 +10,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanWrapper;
@@ -88,7 +86,7 @@ public abstract class FilePathNameUtils {
 		Map<String, Object> data = desc(works);
 		data.put("createDate", DATE_FORMAT.format(new Date()));
 		
-		name = resolverExpression(name, data);
+		name = ConversionUtils.resolverExpression(name, data);
 		return cleanPath(name);
 	}
 	
@@ -98,7 +96,7 @@ public abstract class FilePathNameUtils {
 		Map<String, Object> data = desc(works);
 		data.put("createDate", DATE_FORMAT.format(new Date()));
 		
-		name = resolverExpression(name, data);
+		name = ConversionUtils.resolverExpression(name, data);
 		return cleanPath(name);
 	}
 	
@@ -108,56 +106,12 @@ public abstract class FilePathNameUtils {
 		data.put("createDate", DATE_FORMAT.format(new Date()));
 
 		String path = options.getPathMode().getPathExpression();
-		path = resolverExpression(path, data);
+		path = ConversionUtils.resolverExpression(path, data);
 		
 		String workName = options.getNamedMode().getPathExpression();
-		workName = resolverExpression(workName, data);
+		workName = ConversionUtils.resolverExpression(workName, data);
 		
 		return cleanPath(path + File.separatorChar + workName);
-	}
-	
-	/**
-	 * <b>function:</b> 解析SQL语句中的表达式
-	 * @author hoojo
-	 * @createDate 2013-3-18 下午01:09:39
-	 * @param target 查询语句/匹配类似velocity规则的字符串
-	 * @param params 被替换关键字的的数据源
-	 * @return 返回解析后的语句
-	 * @throws Exception
-	 */
-	public static String resolverExpression(String target, Map<String, Object> params) throws Exception {
-		// 生成匹配模式的正则表达式
-		String patternString = "\\$\\{(" + StringUtils.join(params.keySet(), "|") + ")\\}";
-		//String patternString = "\\$\\{([a-z0-9_\\.\\-\\+]+)\\}";
-		Pattern pattern = Pattern.compile(patternString, Pattern.DOTALL);
-		//System.out.println("pattern: " + pattern.pattern());
-		Matcher matcher = pattern.matcher(target);
-
-		// 两个方法：appendReplacement, appendTail
-		StringBuffer sb = new StringBuffer();
-		while (matcher.find()) {
-			String text = getString(params, matcher.group(1), "");
-			text = StringUtils.remove(text, "/");
-			text = StringUtils.remove(text, "\\");
-			// System.out.println("find group: " + matcher.group(1) + ", val: " + text);
-			matcher.appendReplacement(sb, text);
-		}
-		matcher.appendTail(sb);
-
-		//System.out.println("text: " + sb.toString());
-		return sb.toString();
-	}
-	
-	private static String getString(Map<String, ?> map, String key, String defaults) {
-		
-		if (map == null) {
-			return defaults;
-		}
-		if (map.containsKey(key)) {
-			return map.get(key) == null ? defaults : map.get(key).toString();
-		}
-		
-		return defaults;
 	}
 	
 	/**
