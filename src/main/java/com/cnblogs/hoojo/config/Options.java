@@ -27,6 +27,8 @@ public class Options {
 	private String saveLocation;
 	// 开始页
 	private int beginPage;
+	// 当前抓取页
+	private int currentPage;
 	// 抓取页数
 	private int pageNum;
 	// 最大分析任务数量
@@ -186,6 +188,14 @@ public class Options {
 	
 	public void setMaxSpiderWorksNum(int maxSpiderWorksNum) {
 		this.maxSpiderWorksNum = maxSpiderWorksNum;
+	}
+	
+	public int getCurrentPage() {
+		return currentPage;
+	}
+
+	public void setCurrentPage(int currentPage) {
+		this.currentPage = currentPage;
 	}
 
 	@Override
