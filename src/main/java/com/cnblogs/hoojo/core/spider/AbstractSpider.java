@@ -36,7 +36,6 @@ public abstract class AbstractSpider extends SimpleAnalyzer implements SpiderExe
 	private AnalyzerTaskExecutor analyzerTaskExecutor;
 	private FileSystemCacheManager cacheManager;
 	private TaskState state = TaskState.WAIT;
-	private RuntimeOptions runtimeOptions;
 	private Options options;
 	
     private String site;
@@ -58,7 +57,6 @@ public abstract class AbstractSpider extends SimpleAnalyzer implements SpiderExe
     	this.options = new Options();
     	BeanUtils.copyProperties(spiderOptions, options);
     	afterOptionsSet();
-    	this.runtimeOptions = new RuntimeOptions(this.options);
     	
     	Thread.currentThread().setName(spiderNameAvailable(spiderName, 0));
     	createCacheManager();
@@ -91,7 +89,6 @@ public abstract class AbstractSpider extends SimpleAnalyzer implements SpiderExe
     		this.options = new Options(this.site, this.spiderURL, this.saveLocation, this.pageNo);
     	}
     	afterOptionsSet();
-    	this.runtimeOptions = new RuntimeOptions(this.options);
     	
     	Thread.currentThread().setName(spiderNameAvailable(spiderName, 0));
     	createAnalyzerTaskExecutor();
@@ -170,6 +167,7 @@ public abstract class AbstractSpider extends SimpleAnalyzer implements SpiderExe
     		}
     		if (this.options.getBeginPage() <= 0) {
     			this.options.setBeginPage(MIN_PAGE);
+    			this.options.setCurrentPage(MIN_PAGE);
     		}
     		if (this.options.getMethod() == null) {
     			this.options.setMethod(METHOD);
@@ -206,13 +204,14 @@ public abstract class AbstractSpider extends SimpleAnalyzer implements SpiderExe
     	}
     }
     
-    private String executedPageNext() {
+    protected String executedPageNext() {
         
     	if (this.options.getPageNum() <= 0) {
     		log.info("当前页已是任务尾页，停止爬取 begenPage:{}, pageNum：{}, pageNo: {}", options.getBeginPage(), options.getPageNum(), pageNo);
     		return null;
     	}
     	this.options.setPageNum(this.options.getPageNum() - 1);
+    	this.options.setCurrentPage(pageNo);
 
     	log.info("读取第 {} 页数据 ，开始页:{}, 还剩：{} 页", pageNo, options.getBeginPage(), options.getPageNum());
 
@@ -286,7 +285,7 @@ public abstract class AbstractSpider extends SimpleAnalyzer implements SpiderExe
     
     @Override
     public final RuntimeOptions getOptions() {
-    	return this.runtimeOptions;
+    	return new RuntimeOptions(this.options);
     }
 	
 	@Override
