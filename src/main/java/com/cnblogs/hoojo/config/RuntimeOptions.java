@@ -84,6 +84,9 @@ public final class RuntimeOptions {
 	public int getMaxSpiderWorksNum() {
 		return this.options.getMaxSpiderWorksNum();
 	}
+	public int getCurrentPage() {
+		return this.options.getCurrentPage();
+	}
 	public String toString() {
 		return this.options.toString();
 	}
