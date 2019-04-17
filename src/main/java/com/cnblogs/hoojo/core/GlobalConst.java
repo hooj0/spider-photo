@@ -52,7 +52,7 @@ public abstract interface GlobalConst {
 	class ListeningDownloadServiceConst {
 		
 		/** 同时下载图文 */
-		public static int MAX_DOWNLOAD_WORKS_NUM = 3;
+		public static int MAX_DOWNLOAD_WORKS_NUM = 5;
 
 		/** 失败下载重试 轮询时间 */
 		public static int RETRY_DOWNLOAD_QUQUE_IDLE_MINUTES = 1000 * 5;
@@ -82,7 +82,7 @@ public abstract interface GlobalConst {
 	class DownloadFileTaskConst {
 		
 		/** 最大下载失败数量 */
-		public static int MAX_FAILURE_DOWNLOAD_NUM = 6;
+		public static int MAX_FAILURE_DOWNLOAD_NUM = 5;
 
 		/** 失败下载重试 轮询时间 */
 		public static int RETRY_DOWNLOAD_QUQUE_IDLE_MINUTES = 1000 * 3;
