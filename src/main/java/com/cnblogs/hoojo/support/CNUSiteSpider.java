@@ -111,7 +111,6 @@ public class CNUSiteSpider extends AbstractSpider {
 		options.setAsync(true);
 		options.setPathMode(PathMode.SITE_TYPE);
         options.setNamedMode(NamedMode.DATE_TITLE_AUTHOR);
-        options.setMaxDownloadTaskNum(3);
 		
 		SpiderExecutor spider = null; 
 		/*
