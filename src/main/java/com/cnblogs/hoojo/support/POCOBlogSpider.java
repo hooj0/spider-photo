@@ -33,7 +33,7 @@ import com.google.common.collect.Lists;
 public class POCOBlogSpider extends AbstractSpider {
 
 	private final String charset = "GBK";
-	private final String mobileURL = "http://m.poco.cn/vision/detail.php?photo_id=";
+	private final String mobileURL = "http://www.poco.cn/user/user_center?user_id=";
 	
 	public POCOBlogSpider(String spiderName, String spiderURL, Options options) {
 		super(spiderName, spiderURL, options);
