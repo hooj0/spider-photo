@@ -19,6 +19,8 @@ import com.cnblogs.hoojo.enums.Method;
 import com.cnblogs.hoojo.log.ApplicationLogging;
 import com.cnblogs.hoojo.model.Works;
 import com.cnblogs.hoojo.util.ConversionUtils;
+import com.cnblogs.hoojo.util.HttpClientUtils;
+import com.google.common.collect.Maps;
 
 /**
  * <b>function:</b> 抽象简单分析器
@@ -127,33 +129,37 @@ public abstract class SimpleAnalyzer extends ApplicationLogging implements Analy
     }
 
     protected Map<String, Object> analyzerJSONWeb(String url) throws Exception {
-        return this.analyzerJSONWeb(url, this.getOptions().getMethod());
+    	return ConversionUtils.toMap(new URL(url));
     }
 
-    protected Map<String, Object> analyzerJSONWeb(String url, Method method) throws Exception {
-
+    protected Map<String, Object> analyzerJSONWeb(String url, Method method, String charset) throws Exception {
+    	Map<String, Object> result = Maps.newHashMap();
+    	
         try {
-            return ConversionUtils.toMap(new URL(url));
+        	
+            String json = null;
+            if (method == Method.GET) {
+                json = HttpClientUtils.get(url, charset);
+                // result = ConversionUtils.toMap(new URL(url));
+            } else {
+            	String param = StringUtils.substringAfterLast(url, "?");
+            	json = HttpClientUtils.post(url, param, charset);
+            }
             
-            /*
-            Map<String, Object> result = Maps.newHashMap();
-            String json = ConversionUtils.readWebContent(url, new Long(options.getTimeout()).intValue());
-            if (StringUtils.isBlank(json)) {
+            if (StringUtils.isNotBlank(json)) {
                 try {
                     result = ConversionUtils.toMap(json);
                 } catch (Exception e) {
-                    // log.error("解析 json 异常：", e);
-                    result = ConversionUtils.toMap(new URL(url));
+                    log.error("解析 json 异常：", e);
                 }
-
-                return result;
             }
-            return null;*/
+            
+            return result;
         } catch (IOException e) {
             throw e;
         }
     }
-
+    
 	public final Queue<Works> getSpiderWaiting() {
 		return spiderWaiting;
 	}
