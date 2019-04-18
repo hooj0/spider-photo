@@ -119,12 +119,12 @@ public abstract class AbstractSpider extends SimpleAnalyzer implements SpiderExe
     			throw new RuntimeException("spiderURL is empty.");
     		}
     		
-    		if (!StringUtils.startsWith(spiderURL, "http://")) {
+    		if (!StringUtils.startsWith(spiderURL, "http")) {
     			this.spiderURL = "http://" + spiderURL;
     		} 
     		
     		if (StringUtils.isBlank(site)) {
-    			this.site = StringUtils.substringBetween(spiderURL, "http://", "/");
+    			this.site = StringUtils.substringBetween(spiderURL, "//", "/");
     		}
     		
     		if (StringUtils.isBlank(spiderName)) {
