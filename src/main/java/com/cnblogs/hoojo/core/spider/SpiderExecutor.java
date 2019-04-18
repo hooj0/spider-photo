@@ -30,7 +30,7 @@ public interface SpiderExecutor extends RuntimeDataHolder {
 	public static Map<String, SpiderExecutor> spiderNames = Maps.newLinkedHashMap();
 	public static Map<String, Set<String>> SPIDER_WORKS_LINKS = Maps.newConcurrentMap();
 	        
-	public static final int MIN_PAGE = 1;
+	public static final int MIN_PAGE = 0;
 	public static final int PAGE_NUM = 100;
 	public static final Method METHOD = Method.GET;
 	public static final long TIMEOUT = 2 * 60 * 1000L;
