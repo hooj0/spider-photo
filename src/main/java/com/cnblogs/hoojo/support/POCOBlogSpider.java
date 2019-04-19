@@ -1,28 +1,13 @@
 package com.cnblogs.hoojo.support;
 
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateFormatUtils;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-import org.springframework.util.DigestUtils;
-
 import com.cnblogs.hoojo.config.Options;
-import com.cnblogs.hoojo.core.spider.AbstractSpider;
 import com.cnblogs.hoojo.core.spider.SpiderExecutor;
 import com.cnblogs.hoojo.enums.Method;
 import com.cnblogs.hoojo.enums.NamedMode;
 import com.cnblogs.hoojo.enums.PathMode;
-import com.cnblogs.hoojo.model.Works;
-import com.cnblogs.hoojo.queue.WorksQueue;
 import com.cnblogs.hoojo.util.ConversionUtils;
-import com.cnblogs.hoojo.util.FilePathNameUtils;
-import com.google.common.collect.Lists;
 
 /**
  * <b>function:</b> poco 博客爬取图文
@@ -36,21 +21,15 @@ import com.google.common.collect.Lists;
  * @email hoojo_@126.com
  * @version 1.0
  */
-public class POCOBlogSpider extends AbstractSpider {
+public class POCOBlogSpider extends POCOBasedSpider {
 
-	private final String charset = "GBK";
-	private final static String URL = "https://web-api.poco.cn/v1_1/space/get_user_works_list";
+	private static final String URL = "https://web-api.poco.cn/v1_1/space/get_user_works_list";
+	private static final String BLOG_PARAM = "{\"visited_user_id\":${user_id},\"year\":\"\",\"length\":%s,\"start\":%s}"; 
 	
-	protected static final int LENGTH = 20;
-	protected static final String REQUEST_PARAM = "{\"version\":\"1.1.0\",\"app_name\":\"poco_photography_wap\",\"os_type\":\"weixin\",\"is_enc\":0,\"env\":\"prod\",\"ctime\":%s,\"param\":%s,\"sign_code\":\"%s\"}";
-	
-	protected static final String BLOG_PARAM = "{\"visited_user_id\":${user_id},\"year\":\"\",\"length\":%s,\"start\":%s}"; 
-	protected static final String HOME_PARAM = "{\"type\":\"medal\",\"start\":%s,\"length\":%s,\"category\":\"${category}\",\"time_point\":%s,\"user_id\":null}";
-	
+
 	public POCOBlogSpider(String spiderName, String spiderURL, Options options) {
 		super(spiderName, spiderURL, options);
 	}
-	
 	
 	@Override
 	protected String executedPageNext() {
@@ -75,94 +54,6 @@ public class POCOBlogSpider extends AbstractSpider {
 		return executeURL;
     }
 
-	protected String genSignCode(String param) {
-		String signCode = DigestUtils.md5DigestAsHex(("poco_" + param + "_app").getBytes());
-		signCode = StringUtils.substring(signCode, 5, 19 + 5);
-		
-		return signCode;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public WorksQueue analyzer(String url) throws Exception {
-		WorksQueue queue = new WorksQueue();
-
-		try {
-			Map<String, Object> result = this.analyzerJSONWeb(url, this.getOptions().getMethod(), charset);
-			
-			if (StringUtils.equalsIgnoreCase(MapUtils.getString(result, "code"), "10000")) {
-				
-				String type = "博客 - 作品";
-				String blog = "http://www.poco.cn/user/user_center?user_id=";
-				
-				Map<String, Object> data = MapUtils.getMap(result, "data");
-                if (data != null) {
-                	
-                    Object workListObject = MapUtils.getObject(data, "list");
-                    if (workListObject != null) {
-                    	
-                    	List<Map<String, Object>> workList = (List<Map<String, Object>>) workListObject;
-                        for (Map<String, Object> workItem : workList) {
-                        	Works works = new Works();
-
-                        	works.setType(type);
-                        	works.setAvatar("http:" + MapUtils.getString(workItem, "user_avatar"));
-                        	works.setId(MapUtils.getString(workItem, "works_id"));
-                        	works.setBlog(blog + MapUtils.getString(workItem, "user_id"));
-                        	works.setSite(this.getOptions().getSite());
-                        	works.setAuthor(MapUtils.getString(workItem, "user_nickname"));
-
-                        	String cover = "http:" + MapUtils.getString(MapUtils.getMap(workItem, "cover_image_info"), "file_url");
-                        	works.setCover(cover);
-                        	works.setLink(MapUtils.getString(workItem, "works_url"));
-            				works.setTitle(FilePathNameUtils.clean(StringUtils.trim(MapUtils.getString(workItem, "title"))));
-            				works.setComment(MapUtils.getString(workItem, "description"));
-            				works.setDate(DateFormatUtils.format(MapUtils.getLong(workItem, "create_time"), "yyyy-MM-dd"));
-            				String attract = "浏览：" + MapUtils.getString(workItem, "click_count");
-            				attract += "喜欢：" + MapUtils.getString(workItem, "like_count");
-            				attract += "评论：" + MapUtils.getString(workItem, "comment_count");
-            				works.setAttract(attract);
-
-            				queue.add(works);
-                        }
-                    }
-                }
-			} else {
-                throw new RuntimeException("抓取数据异常:" + result);
-            }
-		} catch (Exception e) {
-			throw e;
-		}
-
-		return queue;
-	}
-
-	@Override
-	public List<String> analyzer(String link, Works works) throws Exception {
-		
-		List<String> list = Lists.newArrayList();
-		Document doc;
-		try {
-			doc = this.analyzerHTMLWeb(link, charset);
-			
-			Elements detailEls = doc.select(".vw_detail_content");
-			System.out.println(detailEls.toString());
-			Elements imgEls = detailEls.select(".vw_image_list .vw_image_part img");
-			System.out.println(imgEls);
-			
-			Iterator<Element> iter = imgEls.iterator();
-			while (iter.hasNext()) {
-				Element imgEl = iter.next();
-				
-				list.add(StringUtils.remove(imgEl.attr("data-src"), "_W800"));
-			}
-		} catch (Exception e) {
-			throw e;
-		}
-		
-		return list;
-	}
-	
 	public static void main(String[] args) {
 		Options options = new Options();
 		options.setMethod(Method.POST);
@@ -172,7 +63,7 @@ public class POCOBlogSpider extends AbstractSpider {
 		options.setSite("www.poco.cn");
 		options.setPathMode(PathMode.SITE_TYPE_AUTHOR);
 		options.setNamedMode(NamedMode.DATE_TITLE);
-		options.setMaxSpiderWorksNum(1);
+		//options.setMaxSpiderWorksNum(1);
 
 		SpiderExecutor spider = null;
 		
