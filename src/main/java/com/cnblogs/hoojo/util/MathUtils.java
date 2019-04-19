@@ -1,6 +1,5 @@
 package com.cnblogs.hoojo.util;
 
-
 public class MathUtils {
 
     /*
