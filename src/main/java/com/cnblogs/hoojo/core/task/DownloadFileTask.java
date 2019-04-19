@@ -203,10 +203,6 @@ public class DownloadFileTask extends ApplicationLogging implements Runnable {
             		Thread.sleep(GlobalConst.DownloadFileTaskConst.WRITE_DISK_FILE_SLEEP_MINUTES);
             	}
             }
-            
-            if (downloadInfo.getSize() != file.length()) {
-            	throw new RuntimeException(String.format("下载大小(%s)和实际文件大小(%s)不符", file.length(), downloadInfo.getSize()));
-            }
         } catch (Exception e) {
             log.error("下载异常：{}", downloadInfo, e);
             downloadInfo.setUsedTime(MathUtils.formatTime(new Date().getTime() - timed));
@@ -226,6 +222,12 @@ public class DownloadFileTask extends ApplicationLogging implements Runnable {
 			} catch (IOException e) {
 				log.error(e.getMessage(), e);
 			}
+        }
+        
+        File file = new File(this.savePath + File.separator + downloadInfo.getFileName());
+        if (downloadInfo.getSize() != file.length()) {
+        	log.error(String.format("下载大小(%s)和实际文件大小(%s)不符", file.length(), downloadInfo.getSize()));
+        	return false;
         }
         
         downloadInfo.setUsedTime(MathUtils.formatTime(new Date().getTime() - timed));
