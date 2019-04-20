@@ -131,7 +131,7 @@ public abstract class POCOBasedSpider extends AbstractSpider {
 		}
 	}
 	
-	private String getType(String url) {
+	protected String getType(String url) {
 		if (StringUtils.contains(url, "get_user_works_list")) {
 			return "博客 - 作品";
 		} else if (StringUtils.contains(url, "get_works_list")) {
