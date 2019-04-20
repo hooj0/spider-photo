@@ -166,7 +166,7 @@ public class ListeningDownloadService extends ListeningDownloadWrapper {
                     	log.error(e);
                     }
 					
-					if (analyzerDataHolder.getSpiderWaiting().size() == analyzerDataHolder.getSpidering().size() && analyzerDataHolder.getSpiderCompleted().size() != 0) {
+					if (analyzerDataHolder.getSpiderWaiting().size() == analyzerDataHolder.getSpidering().size() && analyzerDataHolder.getSpiderWaiting().size() == 0) {
 						break;
 					}
                 }
