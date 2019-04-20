@@ -76,8 +76,8 @@ public abstract class POCOBasedSpider extends AbstractSpider {
             				works.setComment(MapUtils.getString(workItem, "description"));
             				works.setDate(fillDate(MapUtils.getString(workItem, "create_time_str")));
             				String attract = "浏览：" + MapUtils.getString(workItem, "click_count");
-            				attract += "喜欢：" + MapUtils.getString(workItem, "like_count");
-            				attract += "评论：" + MapUtils.getString(workItem, "comment_count");
+            				attract += " 喜欢：" + MapUtils.getString(workItem, "like_count");
+            				attract += " 评论：" + MapUtils.getString(workItem, "comment_count");
             				works.setAttract(attract);
 
             				queue.add(works);
