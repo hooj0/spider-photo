@@ -6,9 +6,9 @@ import java.util.Map;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import com.cnblogs.hoojo.config.Options;
 import com.cnblogs.hoojo.core.spider.SpiderExecutor;
@@ -33,8 +33,11 @@ import com.google.common.collect.Lists;
  * @version 1.0
  */
 public class POCOArticleSpider extends POCOBasedSpider {
+	
 	private static final String URL = "https://web-api.poco.cn/v1_1/article/get_article_list";
 	private static final String PARAM = "{\"type_id\":4,\"start\":%s,\"length\":%s}";
+	
+	private static final String DETAIL_URL = "https://www.poco.cn/skill/detail?article_id=";
 	
 	public POCOArticleSpider(String spiderName, String spiderURL, Options options) {
 		super(spiderName, spiderURL, options);
@@ -89,16 +92,14 @@ public class POCOArticleSpider extends POCOBasedSpider {
                         	works.setId(MapUtils.getString(workItem, "article_id"));
                         	works.setBlog(blog);
                         	works.setSite(this.getOptions().getSite());
-                        	works.setAuthor("视觉漫游");
 
-                        	String cover = "http:" + MapUtils.getString(MapUtils.getMap(workItem, "cover_image_info"), "file_url");
-                        	works.setCover(cover);
+                        	works.setCover("http:" + MapUtils.getString(workItem, "cover"));
                         	works.setLink(MapUtils.getString(workItem, "url"));
             				works.setTitle(FilePathNameUtils.clean(StringUtils.trim(MapUtils.getString(workItem, "title"))));
             				works.setComment(MapUtils.getString(workItem, "description"));
             				works.setDate(MapUtils.getString(workItem, "create_time_str"));
             				String attract = "浏览：" + MapUtils.getString(workItem, "click_count");
-            				attract += "喜欢：" + MapUtils.getString(workItem, "collect_count");
+            				attract += " 喜欢：" + MapUtils.getString(workItem, "collect_count");
             				works.setAttract(attract);
 
             				queue.add(works);
@@ -117,42 +118,45 @@ public class POCOArticleSpider extends POCOBasedSpider {
 	
 	@Override
 	public List<String> analyzer(String link, Works works) throws Exception {
-		
 		List<String> list = Lists.newArrayList();
+		
 		Document doc;
 		try {
-			doc = this.analyzerHTMLWeb(link, "UTF-8");
-			System.out.println(link);
-			System.out.println(doc.toString());
+			doc = this.analyzerHTMLWeb(DETAIL_URL + works.getId(), "UTF-8");
 			
 			String json = doc.select("div[class='json_hidden'] > textarea[jsonname='ret_json']").text();
-
 			Map<String, Object> data = ConversionUtils.toMap(json);
 			
-			Object tmp = MapUtils.getObject(data, "content");
-			if (tmp == null) {
-				return list;
+			works.setAuthor(MapUtils.getString(data, "author"));
+			
+			String content = doc.select("div.detail > div.content").text();
+			content = StringUtils.replaceEach(content, new String[] { "&lt;", "&gt;", "&quot;", "&nbsp;" }, new String[] { "<", ">", "", " " });
+			
+			doc = Jsoup.parseBodyFragment(content);
+			
+			Iterator<Element> imgEls = doc.select("div.image-package img").iterator();
+			while (imgEls.hasNext()) {
+				Element imgEl = imgEls.next();
+				
+				list.add(imgEl.attr("src"));
 			}
-			
-			List<Map<String, Object>> images = (List<Map<String, Object>>) tmp;
-			
 		} catch (Exception e) {
 			throw e;
 		}
 		
 		return list;
 	}
-
+	
 	public static void main(String[] args) {
 		Options options = new Options();
 		options.setMethod(Method.POST);
-		options.setBeginPage(1);
-		options.setPageNum(5);
+		options.setBeginPage(0);
+		options.setPageNum(2);
 		options.setAsync(true);
 		options.setSite("www.poco.cn");
 		options.setPathMode(PathMode.SITE_TYPE);
         options.setNamedMode(NamedMode.DATE_TITLE_AUTHOR);
-		options.setMaxSpiderWorksNum(1);
+		//options.setMaxSpiderWorksNum(1);
 
 		SpiderExecutor spider = null;
 		
