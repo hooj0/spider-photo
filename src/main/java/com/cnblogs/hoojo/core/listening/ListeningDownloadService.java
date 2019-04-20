@@ -165,6 +165,10 @@ public class ListeningDownloadService extends ListeningDownloadWrapper {
                     } catch (InterruptedException e) {
                     	log.error(e);
                     }
+					
+					if (analyzerDataHolder.getSpiderWaiting().size() == analyzerDataHolder.getSpidering().size() && analyzerDataHolder.getSpiderCompleted().size() != 0) {
+						break;
+					}
                 }
 			}
 		}, executor.getSpiderName() + "-监控下载信息").start();
