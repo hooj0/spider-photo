@@ -58,7 +58,7 @@ public class POCOBlogSpider extends POCOBasedSpider {
 		Options options = new Options();
 		options.setMethod(Method.POST);
 		options.setBeginPage(0);
-		options.setPageNum(1);
+		options.setPageNum(2);
 		options.setSite("www.poco.cn");
 		options.setPathMode(PathMode.SITE_TYPE_AUTHOR);
 		options.setNamedMode(NamedMode.DATE_TITLE);
