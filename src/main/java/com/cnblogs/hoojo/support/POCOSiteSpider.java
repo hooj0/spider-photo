@@ -63,6 +63,7 @@ public class POCOSiteSpider extends POCOBasedSpider {
         options.setNamedMode(NamedMode.DATE_TITLE_AUTHOR);
 		//options.setMaxSpiderWorksNum(1);
 
+        
 		SpiderExecutor spider = null;
 		
 		spider = new POCOSiteSpider("POCO勋章作品-人像", URL + "?type=medal&category=1&p=", options);
