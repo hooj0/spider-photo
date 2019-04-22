@@ -71,9 +71,6 @@ public class ListeningDownloadService extends ListeningDownloadWrapper {
 				unFinishDownloadTask();
 				retryDownloadErrorTask();
 				
-				if (!downloadPool.isShutdown()) {
-					downloadPool.shutdown();
-				}
 				if (isFinish()) {
 					state = TaskState.FINISH;
 				}
@@ -347,6 +344,10 @@ public class ListeningDownloadService extends ListeningDownloadWrapper {
 	public boolean isFinish() {
 
 		while (true) {
+			if (!downloadPool.isShutdown()) {
+				downloadPool.shutdown();
+			}
+			
 			if (downloadPool.isTerminated()) {
 				return true;
 			}
