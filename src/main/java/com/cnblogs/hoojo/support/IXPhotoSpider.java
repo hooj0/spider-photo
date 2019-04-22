@@ -1,6 +1,7 @@
 package com.cnblogs.hoojo.support;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Document;
@@ -14,22 +15,53 @@ import com.cnblogs.hoojo.enums.NamedMode;
 import com.cnblogs.hoojo.enums.PathMode;
 import com.cnblogs.hoojo.model.Works;
 import com.cnblogs.hoojo.queue.WorksQueue;
+import com.cnblogs.hoojo.util.ConversionUtils;
 
 /**
  * <b>function:</b> 1x.com 
  * @author hoojo
  * @createDate 2019年4月19日 下午3:07:11
- * @file IxSiteSpider.java
+ * @file IXPhotoSpider.java
  * @package com.cnblogs.hoojo.support
  * @project PhotoSpider
  * @blog http://hoojo.cnblogs.com
  * @email hoojo_@126.com
  * @version 1.0
  */
-public class IxSiteSpider extends AbstractSpider {
+public class IXPhotoSpider extends AbstractSpider {
 	
-	public IxSiteSpider(String spiderName, String spiderURL, Options spiderOptions) {
+	private static final int LENGTH = 30;
+	private static final String PARAM = "";
+	private static final String REQUEST_PARAM = "";
+	
+	private static final String URL = "https://gallery.1x.com/backend/loadmore.php";
+	
+	
+	public IXPhotoSpider(String spiderName, String spiderURL, Options spiderOptions) {
 	    super(spiderName, spiderURL, spiderOptions);
+    }
+	
+	@Override
+	protected String executedPageNext() {
+		
+		String executeURL = super.executedPageNext();
+		if (executeURL == null) {
+			return null;
+		}
+        
+		Map<String, Object> params = ConversionUtils.convertQueryString(executeURL);
+		String param = String.format(PARAM, this.getOptions().getCurrentPage() * LENGTH, LENGTH, System.currentTimeMillis());
+		
+		try {
+			param = ConversionUtils.resolverExpression(param, params);
+		} catch (Exception e) {
+			log.error("转换参数表达式异常：", e);
+		}
+		
+		String req = String.format(REQUEST_PARAM, System.currentTimeMillis(), param);
+		executeURL += "&req=" + req;
+		
+		return executeURL;
     }
 
 	@Override
@@ -82,21 +114,24 @@ public class IxSiteSpider extends AbstractSpider {
 		Options options = new Options();
 		options.setBeginPage(0);
 		options.setPageNum(30);
-		//options.setAsync(true);
+		options.setSite("1x.com");
 		options.setPathMode(PathMode.SITE);
 		options.setNamedMode(NamedMode.DATE);
 		options.setFileNameMode(NamedMode.TITLE_AUTHOR);
+		options.setMaxSpiderWorksNum(1);
 		
 		
 		SpiderExecutor spider = null;
 		
-		spider = new IxSiteSpider("1x 获奖作品", "https://gallery.1x.com/photos/curators-choice/all", options);
+		spider = new IXPhotoSpider("1x 获奖作品", URL + "?app=photos&userid=0&from=30&cat=all&sort=curators-choice&p=", options);
 		spider.execute();
 		
-		spider = new IxSiteSpider("1x 流行作品", "https://gallery.1x.com/photos/popular/all", options);
+		/*
+		spider = new IXPhotoSpider("1x 流行作品", URL + "?app=photos&userid=0&from=30&cat=all&sort=popular&p=", options);
 		spider.execute();
 		
-		spider = new IxSiteSpider("1x 最新作品", "https://gallery.1x.com/photos/latest/all", options);
+		spider = new IXPhotoSpider("1x 最新作品", URL + "?app=photos&userid=0&from=30&cat=all&sort=latest&p=", options);
 		spider.execute();
+		*/
     }
 }
