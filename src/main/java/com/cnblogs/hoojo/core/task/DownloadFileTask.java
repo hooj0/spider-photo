@@ -153,6 +153,13 @@ public class DownloadFileTask extends ApplicationLogging implements Runnable {
             // 打开该网络文件的URL连接
             URLConnection connec = url.openConnection();
             connec.setConnectTimeout(new Long(spiderExecutor.getOptions().getTimeout()).intValue());
+            // 默认值为：false，当向远程服务器传送数据/写数据时，需要设置为true
+ 			connec.setDoOutput(true);
+ 			// 默认值为：true，当前向远程服务读取数据时，设置为true，该参数可有可无
+ 			connec.setDoInput(true);
+ 			// 设置传入参数的格式:请求参数应该是 name1=value1&name2=value2 的形式。
+ 			connec.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+ 			connec.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36");
             
             downloadInfo.setSize(connec.getContentLength());
             downloadInfo.setType(connec.getContentType());
