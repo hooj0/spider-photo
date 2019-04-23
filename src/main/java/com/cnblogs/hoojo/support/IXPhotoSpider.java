@@ -1,9 +1,13 @@
 package com.cnblogs.hoojo.support;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -30,11 +34,10 @@ import com.cnblogs.hoojo.util.ConversionUtils;
  */
 public class IXPhotoSpider extends AbstractSpider {
 	
-	private static final int LENGTH = 30;
-	private static final String PARAM = "";
-	private static final String REQUEST_PARAM = "";
-	
-	private static final String URL = "https://gallery.1x.com/backend/loadmore.php";
+	private static final int SIZE = 30;
+	private static final String DOMAIN = "https://gallery.1x.com";
+	private static final String URL = DOMAIN + "/backend/loadmore.php?app=photos&userid=0";
+	private static final String PARAM = "&from=%s&size=%s";
 	
 	
 	public IXPhotoSpider(String spiderName, String spiderURL, Options spiderOptions) {
@@ -49,19 +52,9 @@ public class IXPhotoSpider extends AbstractSpider {
 			return null;
 		}
         
-		Map<String, Object> params = ConversionUtils.convertQueryString(executeURL);
-		String param = String.format(PARAM, this.getOptions().getCurrentPage() * LENGTH, LENGTH, System.currentTimeMillis());
+		String param = String.format(PARAM, this.getOptions().getCurrentPage() * SIZE, SIZE);
 		
-		try {
-			param = ConversionUtils.resolverExpression(param, params);
-		} catch (Exception e) {
-			log.error("转换参数表达式异常：", e);
-		}
-		
-		String req = String.format(REQUEST_PARAM, System.currentTimeMillis(), param);
-		executeURL += "&req=" + req;
-		
-		return executeURL;
+		return executeURL + param;
     }
 
 	@Override
@@ -69,32 +62,35 @@ public class IXPhotoSpider extends AbstractSpider {
 		
 		WorksQueue queue = new WorksQueue();
 		try {
+			Map<String, Object> params = ConversionUtils.convertQueryString(url);
+			
 			Document doc = this.analyzerHTMLWeb(url, this.getOptions().getMethod());
-			String title = doc.select(".header .title a").text();
-
-			Elements articleEls = doc.select(".content .post");
-			for (Element el : articleEls) {
+			doc = Jsoup.parseBodyFragment(doc.select("data").text());
+			
+			Elements links = doc.select("table.photos_rendertable td a[href^='/photo']");
+			
+			Iterator<Element> iter = links.iterator();
+			while (iter.hasNext()) {
+				Element link = iter.next();
+				Elements item = link.select("table td");
+				
 				Works works = new Works();
 				
-				Elements photos = el.getElementsByClass("photo-posts");
-				Elements foot = el.getElementsByClass("post-foot");
-				Elements author = foot.select("div[id^='like_button_']");
+				works.setId(link.attr("href"));
+				works.setLink(DOMAIN + works.getId());
+				works.setAuthor(item.select("a.dynamiclink").text());
+				works.setBlog(DOMAIN + item.select("a.dynamiclink").attr("href"));
+				works.setTitle(works.getAuthor());
 				
-				works.setCover("");
-				works.setId(author.attr("data-post-id"));
-				works.setLink(foot.select(".datenotes a:eq(0)").attr("href"));
-				works.setAuthor(author.attr("data-blog-name"));
-				works.setTitle(photos.select(".photoCaption").text());
 				works.setSite(this.getOptions().getSite());
-				works.setDate(StringUtils.substringAfter(foot.select(".datenotes a:eq(0)").text(), " "));
-				works.setType(title);
+				works.setDate(DateFormatUtils.format(System.currentTimeMillis(), "yyyy-MM-dd"));
+				works.setType(MapUtils.getString(params, "sort") + "~" + MapUtils.getString(params, "cat"));
 				
-				Elements images = photos.select("img");
-				for (Element img : images) {
-					works.getResources().add(img.attr("src"));
-				}
-				
-				if (images.size() > 0) {
+				String img = item.select("img").attr("src");
+				if (!StringUtils.endsWith(img, "nude-ld.jpg")) {
+					img = DOMAIN + StringUtils.replaceOnce(img, "-ld.jpg", "-sd.jpg");
+					works.getResources().add(img);
+
 					queue.add(works);
 				}
 			}
@@ -113,24 +109,24 @@ public class IXPhotoSpider extends AbstractSpider {
 	public static void main(String[] args) {
 		Options options = new Options();
 		options.setBeginPage(0);
-		options.setPageNum(30);
+		options.setPageNum(2);
 		options.setSite("1x.com");
-		options.setPathMode(PathMode.SITE);
+		options.setPathMode(PathMode.SITE_TYPE);
 		options.setNamedMode(NamedMode.DATE);
 		options.setFileNameMode(NamedMode.TITLE_AUTHOR);
-		options.setMaxSpiderWorksNum(1);
+		//options.setMaxSpiderWorksNum(1);
 		
 		
 		SpiderExecutor spider = null;
 		
-		spider = new IXPhotoSpider("1x 获奖作品", URL + "?app=photos&userid=0&from=30&cat=all&sort=curators-choice&p=", options);
+		spider = new IXPhotoSpider("1x 获奖作品", URL + "&cat=all&sort=curators-choice&p=", options);
 		spider.execute();
 		
 		/*
-		spider = new IXPhotoSpider("1x 流行作品", URL + "?app=photos&userid=0&from=30&cat=all&sort=popular&p=", options);
+		spider = new IXPhotoSpider("1x 流行作品", URL + "&cat=all&sort=popular&p=", options);
 		spider.execute();
 		
-		spider = new IXPhotoSpider("1x 最新作品", URL + "?app=photos&userid=0&from=30&cat=all&sort=latest&p=", options);
+		spider = new IXPhotoSpider("1x 最新作品", URL + "&cat=all&sort=latest&p=", options);
 		spider.execute();
 		*/
     }
