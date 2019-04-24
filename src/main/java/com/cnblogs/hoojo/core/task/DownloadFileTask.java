@@ -3,6 +3,7 @@ package com.cnblogs.hoojo.core.task;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -131,6 +132,7 @@ public class DownloadFileTask extends ApplicationLogging implements Runnable {
 
         long timed = System.currentTimeMillis();
         
+        File file = null;
         InputStream is = null;
         OutputStream fos =  null;
         try {
@@ -164,7 +166,22 @@ public class DownloadFileTask extends ApplicationLogging implements Runnable {
             downloadInfo.setSize(connec.getContentLength());
             downloadInfo.setType(connec.getContentType());
             
-            File file = new File(this.savePath + File.separator + downloadInfo.getFileName());
+            file = new File(this.savePath + File.separator + downloadInfo.getFileName());
+            
+            File folder = file.getParentFile();
+        	if (folder.exists() && folder.listFiles().length >= 50) {
+        		file = new File(this.savePath + File.separator + folder.listFiles(new FileFilter() {
+					@Override
+					public boolean accept(File pathname) {
+						if (pathname.isDirectory()) {
+							return true;
+						}
+						
+						return false;
+					}
+				}).length + File.separator + downloadInfo.getFileName());
+        	}
+            
             if (file.exists() && !overwrite) {
             	
             	if (connec.getContentLength() == file.length()) {
@@ -231,7 +248,7 @@ public class DownloadFileTask extends ApplicationLogging implements Runnable {
 			}
         }
         
-        File file = new File(this.savePath + File.separator + downloadInfo.getFileName());
+        file = new File(file.getAbsolutePath());
         if (downloadInfo.getSize() != file.length()) {
         	log.error(String.format("下载大小(%s)和实际文件大小(%s)不符", file.length(), downloadInfo.getSize()));
         	return false;
