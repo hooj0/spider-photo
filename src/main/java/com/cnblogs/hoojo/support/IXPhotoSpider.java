@@ -108,13 +108,13 @@ public class IXPhotoSpider extends AbstractSpider {
 	
 	public static void main(String[] args) {
 		Options options = new Options();
-		options.setBeginPage(0);
-		options.setPageNum(4);
+		options.setBeginPage(9);
+		options.setPageNum(10);
 		options.setSite("1x.com");
 		options.setPathMode(PathMode.SITE_TYPE);
 		options.setNamedMode(NamedMode.DATE);
 		options.setFileNameMode(NamedMode.TITLE_AUTHOR);
-		options.setMaxSpiderWorksNum(60);
+		//options.setMaxSpiderWorksNum(60);
 		
 		
 		SpiderExecutor spider = null;
