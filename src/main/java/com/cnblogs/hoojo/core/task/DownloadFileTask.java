@@ -170,16 +170,7 @@ public class DownloadFileTask extends ApplicationLogging implements Runnable {
             
             File folder = file.getParentFile();
         	if (folder.exists() && folder.listFiles().length >= 50) {
-        		file = new File(this.savePath + File.separator + folder.listFiles(new FileFilter() {
-					@Override
-					public boolean accept(File pathname) {
-						if (pathname.isDirectory()) {
-							return true;
-						}
-						
-						return false;
-					}
-				}).length + File.separator + downloadInfo.getFileName());
+        		file = new File(createFolder(folder), downloadInfo.getFileName());
         	}
             
             if (file.exists() && !overwrite) {
@@ -259,5 +250,41 @@ public class DownloadFileTask extends ApplicationLogging implements Runnable {
         
         log.info("图片下载完毕：{}", targetURL);
         return true;
+    }
+    
+    private File createFolder(File folder) {
+    	
+    	if (folder.isDirectory()) {
+    		if (folder.exists()) {
+    			
+    			File[] folders = folder.listFiles(new FileFilter() {
+					@Override
+					public boolean accept(File pathname) {
+						if (pathname.isDirectory()) {
+							return true;
+						}
+						
+						return false;
+					}
+				});
+    			
+    			for (File dir : folders) {
+    				if (dir.listFiles().length < 50) {
+    					return dir;
+    				}
+    			}
+    			
+    			folder = new File(folder, folder.getName() + "_" + (folders.length + 1));
+    			folder.mkdirs();
+    			
+    			return folder;
+    		} else {
+    			folder.mkdirs();
+    			
+    			return folder;
+    		}
+    	}
+    	
+    	throw new RuntimeException(folder.getAbsolutePath() + " 不是一个文件夹");
     }
 }
