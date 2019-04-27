@@ -170,7 +170,7 @@ public class DownloadFileTask extends ApplicationLogging implements Runnable {
             
             File folder = file.getParentFile();
         	if (folder.exists() && folder.listFiles().length >= 50) {
-        		file = new File(createFolder(folder), downloadInfo.getFileName());
+        		file = new File(createGroupFolder(folder), downloadInfo.getFileName());
         	}
             
             if (file.exists() && !overwrite) {
@@ -252,15 +252,15 @@ public class DownloadFileTask extends ApplicationLogging implements Runnable {
         return true;
     }
     
-    private File createFolder(File folder) {
+    private File createGroupFolder(File folder) {
     	
     	if (folder.isDirectory()) {
     		if (folder.exists()) {
     			
     			File[] folders = folder.listFiles(new FileFilter() {
 					@Override
-					public boolean accept(File pathname) {
-						if (pathname.isDirectory()) {
+					public boolean accept(File pathFile) {
+						if (pathFile.isDirectory()) {
 							return true;
 						}
 						
