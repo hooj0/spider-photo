@@ -22,7 +22,7 @@ import com.cnblogs.hoojo.util.FilePathNameUtils;
 import com.google.common.collect.Lists;
 
 /**
- * <b>function:</b>
+ * <b>function:</b> 视觉漫游
  * @author hoojo
  * @createDate 2019年4月19日 下午6:36:15
  * @file POCOArticleSpider.java
