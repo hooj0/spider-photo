@@ -39,6 +39,14 @@ public class IXPhotoSpider extends AbstractSpider {
 	private static final String URL = DOMAIN + "/backend/loadmore.php?app=photos&userid=0";
 	private static final String PARAM = "&from=%s&size=%s";
 	
+	protected static final String[] CATEGORIES = { 
+			"abstract", "action", "animals", "architecture", 
+			"conceptual", "creative-edit", "documentary", "everyday", 
+			"fine-art-nude", "humour", "landscape", "macro", 
+			"mood", "night", "performance", "portrait", 
+			"still-life", "street", "underwater", "wildlife" 
+		};
+	
 	
 	public IXPhotoSpider(String spiderName, String spiderURL, Options spiderOptions) {
 	    super(spiderName, spiderURL, spiderOptions);
@@ -59,10 +67,12 @@ public class IXPhotoSpider extends AbstractSpider {
 
 	@Override
 	public WorksQueue analyzer(String url) throws Exception {
-		
 		WorksQueue queue = new WorksQueue();
+		
 		try {
 			Map<String, Object> params = ConversionUtils.convertQueryString(url);
+			String type = MapUtils.getString(params, "sort");
+			String category = MapUtils.getString(params, "cat");
 			
 			Document doc = this.analyzerHTMLWeb(url, this.getOptions().getMethod());
 			doc = Jsoup.parseBodyFragment(doc.select("data").text());
@@ -75,16 +85,18 @@ public class IXPhotoSpider extends AbstractSpider {
 				Elements item = link.select("table td");
 				
 				Works works = new Works();
-				
 				works.setId(link.attr("href"));
 				works.setLink(DOMAIN + works.getId());
 				works.setAuthor(item.select("a.dynamiclink").text());
 				works.setBlog(DOMAIN + item.select("a.dynamiclink").attr("href"));
-				works.setTitle(works.getAuthor());
 				
 				works.setSite(this.getOptions().getSite());
+				works.setTitle(category);
+				works.setType(type);
+				
 				works.setDate(DateFormatUtils.format(System.currentTimeMillis(), "yyyy-MM-dd"));
-				works.setType(MapUtils.getString(params, "sort") + "~" + MapUtils.getString(params, "cat"));
+				works.setType(type + "~" + category);
+				works.setTitle(works.getAuthor());
 				
 				String img = item.select("img").attr("src");
 				if (!StringUtils.endsWith(img, "nude-ld.jpg")) {
@@ -100,7 +112,7 @@ public class IXPhotoSpider extends AbstractSpider {
 		
 		return queue;
 	}
-
+	
 	@Override
 	public List<String> analyzer(String link, Works works) throws Exception {
 		return null;
@@ -114,7 +126,7 @@ public class IXPhotoSpider extends AbstractSpider {
 		options.setPathMode(PathMode.SITE_TYPE);
 		options.setNamedMode(NamedMode.DATE);
 		options.setFileNameMode(NamedMode.TITLE_AUTHOR);
-		//options.setMaxSpiderWorksNum(60);
+		//options.setMaxSpiderWorksNum(1);
 		
 		
 		SpiderExecutor spider = null;
@@ -122,12 +134,14 @@ public class IXPhotoSpider extends AbstractSpider {
 		/*
 		spider = new IXPhotoSpider("1x 获奖作品", URL + "&cat=all&sort=curators-choice&p=", options);
 		spider.execute();
-		
+		*/
+
 		spider = new IXPhotoSpider("1x 流行作品", URL + "&cat=all&sort=popular&p=", options);
 		spider.execute();
-		 */
-
+		
+		/*
 		spider = new IXPhotoSpider("1x 最新作品", URL + "&cat=all&sort=latest&p=", options);
 		spider.execute();
+		 */
     }
 }
