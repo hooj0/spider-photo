@@ -58,7 +58,7 @@ public class POCOSiteSpider extends POCOBasedSpider {
 		options.setMethod(Method.POST);
 		options.setBeginPage(0);
 		options.setPageNum(2);
-		options.setSite("www.poco.cn");
+		options.setSite("poco.cn");
 		options.setPathMode(PathMode.SITE_TYPE);
         options.setNamedMode(NamedMode.DATE_TITLE_AUTHOR);
 		//options.setMaxSpiderWorksNum(1);
