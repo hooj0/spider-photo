@@ -114,6 +114,7 @@ public class CNUBlogSpider extends AbstractSpider {
 		options.setBeginPage(1);
 		options.setPageNum(5);
 		options.setAsync(true);
+		options.setSite("cnu.cc");
 		options.setPathMode(PathMode.SITE_TYPE_AUTHOR);
 		options.setNamedMode(NamedMode.DATE_TITLE);
 		options.setMaxSpiderWorksNum(1);
