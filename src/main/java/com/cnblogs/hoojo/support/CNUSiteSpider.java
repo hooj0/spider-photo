@@ -109,6 +109,7 @@ public class CNUSiteSpider extends AbstractSpider {
 		options.setBeginPage(0);
 		options.setPageNum(6);
 		options.setAsync(true);
+		options.setSite("cnu.cc");
 		options.setPathMode(PathMode.SITE_TYPE);
         options.setNamedMode(NamedMode.DATE_TITLE_AUTHOR);
 		
