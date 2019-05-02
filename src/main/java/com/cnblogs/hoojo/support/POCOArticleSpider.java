@@ -151,7 +151,7 @@ public class POCOArticleSpider extends POCOBasedSpider {
 		Options options = new Options();
 		options.setMethod(Method.POST);
 		options.setBeginPage(0);
-		options.setPageNum(20);
+		options.setPageNum(5);
 		options.setAsync(true);
 		options.setSite("poco.cn");
 		options.setPathMode(PathMode.SITE_TYPE);
