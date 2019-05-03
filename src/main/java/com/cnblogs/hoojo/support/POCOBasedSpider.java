@@ -60,7 +60,13 @@ public abstract class POCOBasedSpider extends AbstractSpider {
                     	
                     	List<Map<String, Object>> workList = (List<Map<String, Object>>) workListObject;
                         for (Map<String, Object> workItem : workList) {
+                        	int worksType = MapUtils.getIntValue(workItem, "works_type");
+                        	if (worksType == 1) {
+                        		continue;
+                        	}
+                        	
                         	Works works = new Works();
+                        	works.getParams().put("worksType", worksType);
 
                         	works.setType(getType(url));
                         	works.setAvatar("http:" + MapUtils.getString(workItem, "user_avatar"));
@@ -101,6 +107,11 @@ public abstract class POCOBasedSpider extends AbstractSpider {
 		Document doc;
 		try {
 			doc = this.analyzerHTMLWeb(link, "UTF-8");
+			
+			if (MapUtils.getIntValue(works.getParams(), "worksType") == 2) {
+				return analyzerBlog(doc, works);
+			}
+			
 			Elements imgEls = doc.select(".vw_h div img[data-src*='poco/works']");
 			
 			Iterator<Element> iter = imgEls.iterator();
@@ -108,6 +119,28 @@ public abstract class POCOBasedSpider extends AbstractSpider {
 				Element imgEl = iter.next();
 				
 				list.add("http:" + imgEl.attr("data-src"));
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+		
+		return list;
+	}
+	
+	public List<String> analyzerBlog(Document doc, Works works) throws Exception {
+		List<String> list = Lists.newArrayList();
+		
+		try {
+			String json = doc.select("div[class='json_hidden'] > textarea[jsonname='works_info']").text();
+			json = StringUtils.replaceEach(json, new String[] { "&lt;", "&gt;", "&quot;", "&nbsp;", "\\" }, new String[] { "<", ">", "", " ", "" });
+			
+			//Map<String, Object> data = ConversionUtils.toMap(json);
+			//works.setAuthor(MapUtils.getString(data, "author"));
+			//MapUtils.getIntValue(data, "works_type");
+			
+			String[] images = StringUtils.substringsBetween(json, ",\"file_url\":\"", "\",\"file_name\":");
+			for (String image : images) {
+				list.add("http:" + image);
 			}
 		} catch (Exception e) {
 			throw e;
