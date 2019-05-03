@@ -2,7 +2,9 @@ package com.cnblogs.hoojo.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -36,8 +38,8 @@ public class Works implements Serializable {
     private String avatar;
     private String blog;
 
-    private List<String> resources = new ArrayList<String>();
-
+	private List<String> resources = new ArrayList<String>();
+	private Map<String, Object> params = new HashMap<>();
 	private int downloadCompletedNum = 1;
 
     public String getSite() {
@@ -155,6 +157,13 @@ public class Works implements Serializable {
 			return true;
 		}
 		return false;
+	}
+	
+	public Map<String, Object> getParams() {
+		return params;
+	}
+	public void setParams(Map<String, Object> params) {
+		this.params = params;
 	}
 	
 	@Override
