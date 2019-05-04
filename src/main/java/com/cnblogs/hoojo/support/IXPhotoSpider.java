@@ -121,7 +121,7 @@ public class IXPhotoSpider extends AbstractSpider {
 	public static void main(String[] args) {
 		Options options = new Options();
 		options.setBeginPage(0);
-		options.setPageNum(100);
+		options.setPageNum(20);
 		options.setSite("1x.com");
 		options.setPathMode(PathMode.SITE_TYPE);
 		options.setNamedMode(NamedMode.DATE);
