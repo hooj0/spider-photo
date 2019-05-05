@@ -49,7 +49,6 @@ public abstract class POCOBasedSpider extends AbstractSpider {
 			Map<String, Object> result = this.analyzerJSONWeb(url, this.getOptions().getMethod(), charset);
 			
 			if (StringUtils.equalsIgnoreCase(MapUtils.getString(result, "code"), "10000")) {
-				
 				String blog = "http://www.poco.cn/user/user_center?user_id=";
 				
 				Map<String, Object> data = MapUtils.getMap(result, "data");
