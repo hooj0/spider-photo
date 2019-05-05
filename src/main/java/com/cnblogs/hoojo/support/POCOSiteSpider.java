@@ -2,6 +2,8 @@ package com.cnblogs.hoojo.support;
 
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.cnblogs.hoojo.config.Options;
 import com.cnblogs.hoojo.core.spider.SpiderExecutor;
 import com.cnblogs.hoojo.enums.Method;
@@ -24,7 +26,7 @@ import com.cnblogs.hoojo.util.ConversionUtils;
 public class POCOSiteSpider extends POCOBasedSpider {
 
 	private static final String URL = "https://web-api.poco.cn/v1_1/works/get_works_list";
-	private static final String HOME_PARAM = "{\"type\":\"${type}\",\"start\":%s,\"length\":%s,\"category\":\"${category}\",\"time_point\":1556532889,\"user_id\":null}";
+	private static final String HOME_PARAM = "{\"type\":\"${type}\",\"start\":%s,\"length\":%s,\"category\":\"${category}\",\"time_point\":%s,\"user_id\":null}";
 	
 	public POCOSiteSpider(String spiderName, String spiderURL, Options options) {
 		super(spiderName, spiderURL, options);
@@ -39,7 +41,8 @@ public class POCOSiteSpider extends POCOBasedSpider {
 		}
         
 		Map<String, Object> params = ConversionUtils.convertQueryString(executeURL);
-		String param = String.format(HOME_PARAM, this.getOptions().getCurrentPage() * LENGTH, LENGTH, System.currentTimeMillis());
+		String timed = String.valueOf(System.currentTimeMillis());
+		String param = String.format(HOME_PARAM, this.getOptions().getCurrentPage() * LENGTH, LENGTH, StringUtils.substring(timed, 0, 10));
 		
 		try {
 			param = ConversionUtils.resolverExpression(param, params);
@@ -47,7 +50,7 @@ public class POCOSiteSpider extends POCOBasedSpider {
 			log.error("转换参数表达式异常：", e);
 		}
 		
-		String req = String.format(REQUEST_PARAM, System.currentTimeMillis(), param, genSignCode(param));
+		String req = String.format(REQUEST_PARAM, timed, param, genSignCode(param));
 		executeURL += "&req=" + req;
 		
 		return executeURL;
