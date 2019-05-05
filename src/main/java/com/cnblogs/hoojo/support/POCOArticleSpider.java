@@ -52,7 +52,8 @@ public class POCOArticleSpider extends POCOBasedSpider {
 		}
         
 		Map<String, Object> params = ConversionUtils.convertQueryString(executeURL);
-		String param = String.format(PARAM, this.getOptions().getCurrentPage() * LENGTH, LENGTH, System.currentTimeMillis());
+		String timed = String.valueOf(System.currentTimeMillis());
+		String param = String.format(PARAM, this.getOptions().getCurrentPage() * LENGTH, LENGTH, StringUtils.substring(timed, 0, 10));
 		
 		try {
 			param = ConversionUtils.resolverExpression(param, params);
@@ -60,7 +61,7 @@ public class POCOArticleSpider extends POCOBasedSpider {
 			log.error("转换参数表达式异常：", e);
 		}
 		
-		String req = String.format(REQUEST_PARAM, System.currentTimeMillis(), param, genSignCode(param));
+		String req = String.format(REQUEST_PARAM, timed, param, genSignCode(param));
 		executeURL += "&req=" + req;
 		
 		return executeURL;
