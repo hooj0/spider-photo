@@ -59,13 +59,9 @@ public abstract class POCOBasedSpider extends AbstractSpider {
                     	
                     	List<Map<String, Object>> workList = (List<Map<String, Object>>) workListObject;
                         for (Map<String, Object> workItem : workList) {
-                        	int worksType = MapUtils.getIntValue(workItem, "works_type");
-                        	if (worksType == 1) {
-                        		continue;
-                        	}
                         	
                         	Works works = new Works();
-                        	works.getParams().put("worksType", worksType);
+                        	works.getParams().put("worksType", MapUtils.getIntValue(workItem, "works_type"));
 
                         	works.setType(getType(url));
                         	works.setAvatar("http:" + MapUtils.getString(workItem, "user_avatar"));
@@ -132,10 +128,6 @@ public abstract class POCOBasedSpider extends AbstractSpider {
 		try {
 			String json = doc.select("div[class='json_hidden'] > textarea[jsonname='works_info']").text();
 			json = StringUtils.replaceEach(json, new String[] { "&lt;", "&gt;", "&quot;", "&nbsp;", "\\" }, new String[] { "<", ">", "", " ", "" });
-			
-			//Map<String, Object> data = ConversionUtils.toMap(json);
-			//works.setAuthor(MapUtils.getString(data, "author"));
-			//MapUtils.getIntValue(data, "works_type");
 			
 			String[] images = StringUtils.substringsBetween(json, ",\"file_url\":\"", "\",\"file_name\":");
 			for (String image : images) {
