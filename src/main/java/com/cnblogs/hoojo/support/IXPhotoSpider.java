@@ -121,7 +121,7 @@ public class IXPhotoSpider extends AbstractSpider {
 	public static void main(String[] args) {
 		Options options = new Options();
 		options.setBeginPage(0);
-		options.setPageNum(50);
+		options.setPageNum(20);
 		options.setSite("1x.com");
 		options.setPathMode(PathMode.SITE_TYPE);
 		options.setNamedMode(NamedMode.DATE);
@@ -130,15 +130,15 @@ public class IXPhotoSpider extends AbstractSpider {
 		
 		SpiderExecutor spider = null;
 
+		/*
 		spider = new IXPhotoSpider("1x 获奖作品", URL + "&cat=all&sort=curators-choice&p=", options);
 		spider.execute();
-
-		/*
+		
 		spider = new IXPhotoSpider("1x 流行作品", URL + "&cat=all&sort=popular&p=", options);
 		spider.execute();
+		 */
 		
 		spider = new IXPhotoSpider("1x 最新作品", URL + "&cat=all&sort=latest&p=", options);
 		spider.execute();
-		 */
     }
 }
