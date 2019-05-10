@@ -124,7 +124,7 @@ public class CNUHomeSpider extends AbstractSpider {
     public static void main(String[] args) {
 
         Options options = new Options();
-        options.setBeginPage(0);
+        options.setBeginPage(1);
         options.setPageNum(5);
         options.setAsync(true);
         options.setSite("cnu.cc");
