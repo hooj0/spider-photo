@@ -114,11 +114,10 @@ public class CNUSiteSpider extends AbstractSpider {
         options.setNamedMode(NamedMode.DATE_TITLE_AUTHOR);
 		
 		SpiderExecutor spider = null; 
-		
+		/*
 		spider = new CNUSiteSpider("CNU主站原创-推荐", "http://www.cnu.cc/discoveryPage/recommend-0?page=", options);
 		spider.execute();
 		
-		/*
 		spider = new CNUSiteSpider("CNU主站原创-热门", "http://www.cnu.cc/discoveryPage/hot-0?page=", options);
 		spider.execute();
 		
@@ -130,13 +129,14 @@ public class CNUSiteSpider extends AbstractSpider {
 		*/
 		
 		//-------------------------------------------------------
-		/*
+
 		spider = new CNUSiteSpider("CNU主站灵感-最新", "http://www.cnu.cc/inspirationPage/recent-0?page=", options);
 		spider.execute();
 
 		spider = new CNUSiteSpider("CNU主站灵感-热门", "http://www.cnu.cc/inspirationPage/hot-0?page=", options);
 		spider.execute();
 		
+		/*
 		spider = new CNUSiteSpider("CNU主站灵感-热门-人像", "http://www.cnu.cc/inspirationPage/hot-111?page=", options);
 		spider.execute();
 		
