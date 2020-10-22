@@ -33,7 +33,7 @@ import com.google.common.collect.Lists;
 public class CNUHomeSpider extends AbstractSpider {
 
     String worksURL = "http://www.cnu.cc/works/";
-    String imageURL = "http://img.cnu.cc/uploads/images/920/";
+    String imageURL = "http://imgoss.cnu.cc/";
 
     public CNUHomeSpider(String spiderName, String spiderURL, Options options) {
         super(spiderName, spiderURL, options);
@@ -125,7 +125,7 @@ public class CNUHomeSpider extends AbstractSpider {
 
         Options options = new Options();
         options.setBeginPage(1);
-        options.setPageNum(5);
+        options.setPageNum(50);
         options.setAsync(true);
         options.setSite("cnu.cc");
         options.setMaxAnalyzerTaskNum(5);
