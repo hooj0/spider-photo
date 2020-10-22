@@ -44,7 +44,7 @@ public class BTYMSiteSpider extends AbstractSpider {
 		
 		try {
 			Document doc = this.analyzerHTMLWeb(url, this.getOptions().getMethod());
-			Elements articleEls = doc.select("#bottom_bar > nav > ul.menu_list li.category:lt(6)");
+			Elements articleEls = doc.select("#menu_bar nav ul.menu_list li.category:lt(6)");
 			
 			for (Element typeEl : articleEls) {
 				
@@ -52,6 +52,10 @@ public class BTYMSiteSpider extends AbstractSpider {
 				Elements workEls = typeEl.select("li.item > a");
 
 				for (Element workEl : workEls) {
+					
+					if (workEl.attr("href").contains("www.")) {
+						continue;
+					}
 					
 					Works works = new Works();
 					
