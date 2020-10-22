@@ -121,7 +121,7 @@ public class IXPhotoSpider extends AbstractSpider {
 	public static void main(String[] args) {
 		Options options = new Options();
 		options.setBeginPage(0);
-		options.setPageNum(20);
+		options.setPageNum(2);
 		options.setSite("1x.com");
 		options.setPathMode(PathMode.SITE_TYPE);
 		options.setNamedMode(NamedMode.DATE);
@@ -136,9 +136,55 @@ public class IXPhotoSpider extends AbstractSpider {
 		
 		spider = new IXPhotoSpider("1x 流行作品", URL + "&cat=all&sort=popular&p=", options);
 		spider.execute();
-		 */
-		
+
 		spider = new IXPhotoSpider("1x 最新作品", URL + "&cat=all&sort=latest&p=", options);
 		spider.execute();
+		 */
+		
+		
+		
+		spider = new IXPhotoSpider("1x 最新作品-architecture", URL + "&cat=architecture&sort=latest&p=", options);
+		spider.execute();
+		
+		spider = new IXPhotoSpider("1x 最新作品-documentary", URL + "&cat=documentary&sort=latest&p=", options);
+		spider.execute();		
+		
+		spider = new IXPhotoSpider("1x 最新作品-everyday", URL + "&cat=everyday&sort=latest&p=", options);
+		spider.execute();
+		
+		spider = new IXPhotoSpider("1x 最新作品-fine-art-nude", URL + "&cat=fine-art-nude&sort=latest&p=", options);
+		spider.execute();
+		
+		spider = new IXPhotoSpider("1x 最新作品-humour", URL + "&cat=humour&sort=latest&p=", options);
+		spider.execute();
+		
+		spider = new IXPhotoSpider("1x 最新作品-street", URL + "&cat=street&sort=latest&p=", options);
+		spider.execute();
+		
+		spider = new IXPhotoSpider("1x 最新作品-mood", URL + "&cat=mood&sort=latest&p=", options);
+		spider.execute();
+		
+
+		/*
+		for (String category : CATEGORIES) {
+			
+			spider = new IXPhotoSpider("1x 最新作品-" + category, URL + "&cat=" + category + "&sort=latest&p=", options);
+			spider.execute();
+			
+			while (true) {
+				
+				if (spider.getListeningDownloadManager().getDownloadState() == TaskState.FINISH) {
+					System.out.println(category + " ==>>> 下载完成");
+					break;
+				}
+				
+				try {
+					Thread.sleep(1000 * 5);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		*/
     }
 }
