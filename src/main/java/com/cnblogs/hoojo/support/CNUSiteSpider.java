@@ -34,7 +34,7 @@ import com.google.common.collect.Lists;
  */
 public class CNUSiteSpider extends AbstractSpider {
 
-	String imageURL = "http://img.cnu.cc/uploads/images/920/";
+	String imageURL = "http://imgoss.cnu.cc/";
 	
 	public CNUSiteSpider(String spiderName, String spiderURL, Options options) {
 		super(spiderName, spiderURL, options);
@@ -107,20 +107,21 @@ public class CNUSiteSpider extends AbstractSpider {
 		
 		Options options = new Options();
 		options.setBeginPage(0);
-		options.setPageNum(6);
+		options.setPageNum(1);
 		options.setAsync(true);
 		options.setSite("cnu.cc");
 		options.setPathMode(PathMode.SITE_TYPE);
         options.setNamedMode(NamedMode.DATE_TITLE_AUTHOR);
 		
 		SpiderExecutor spider = null; 
-		/*
+
 		spider = new CNUSiteSpider("CNU主站原创-推荐", "http://www.cnu.cc/discoveryPage/recommend-0?page=", options);
 		spider.execute();
 		
 		spider = new CNUSiteSpider("CNU主站原创-热门", "http://www.cnu.cc/discoveryPage/hot-0?page=", options);
 		spider.execute();
 		
+		/*
 		spider = new CNUSiteSpider("CNU主站原创-热门-人像", "http://www.cnu.cc/discoveryPage/hot-%E4%BA%BA%E5%83%8F?page=", options);
 		spider.execute();
 
@@ -129,7 +130,6 @@ public class CNUSiteSpider extends AbstractSpider {
 		*/
 		
 		//-------------------------------------------------------
-
 		spider = new CNUSiteSpider("CNU主站灵感-最新", "http://www.cnu.cc/inspirationPage/recent-0?page=", options);
 		spider.execute();
 
