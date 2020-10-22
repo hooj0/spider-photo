@@ -34,7 +34,7 @@ import com.google.common.collect.Lists;
  */
 public class CNUBlogSpider extends AbstractSpider {
 
-	String imageURL = "http://img.cnu.cc/uploads/images/920/";
+	String imageURL = "http://imgoss.cnu.cc/";
 	String oldImageURL = "http://img.cnu.cc/forum/";
 	int oldDate = 201501;
 	
